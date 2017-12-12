@@ -1,3 +1,3 @@
 ## Kattus
 
-- à rédiger
+- à rédiger pour le rendu
