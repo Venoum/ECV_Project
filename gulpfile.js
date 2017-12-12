@@ -10,11 +10,11 @@ const livereload = require('gulp-livereload')
 const autoprefixer = require('gulp-autoprefixer')
 
 const source = 'dev/'
-const dest = 'www/'
+const dest = 'dest/assets'
 
 // Compile Our Sass
-gulp.task('sass', function () {
-  return gulp.src(source + 'sass/all.sass')
+gulp.task('scss', function () {
+  return gulp.src(source + 'scss/**/*.scss')
       .pipe(sass().on('error', sass.logError))
       .pipe(autoprefixer({
         browsers: ['since 2012'],
@@ -27,11 +27,9 @@ gulp.task('sass', function () {
 
 // Concatenate & Minify JS
 gulp.task('scripts', function () {
-  return gulp.src(source + 'js/*.js')
-      .pipe(concat('all.js'))
+  return gulp.src(source + 'js/**/*.js')
       .pipe(babel())
       .on('error', showError)
-      .pipe(rename('all.js'))
       .pipe(gulp.dest(dest + 'js/'))
       .pipe(livereload())
 })
@@ -39,12 +37,12 @@ gulp.task('scripts', function () {
 // Watch Files For Changes
 gulp.task('watch', function () {
   livereload.listen()
-  gulp.watch('dev/js/*.js', ['scripts'])
-  gulp.watch('dev/sass/*.sass', ['sass'])
+  gulp.watch(source + 'scss/**/*.scss', ['scss'])
+  gulp.watch(source + 'js/**/*.js', ['scripts'])
 })
 
 // Default Task
-gulp.task('default', ['sass', 'scripts', 'watch'])
+gulp.task('default', ['scss', 'scripts', 'watch'])
 
 // Show error
 function showError (error) {

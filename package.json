@@ -2,9 +2,9 @@
   "name": "kattus",
   "version": "1.0.0",
   "description": "Projet de fin de trimestre : création d'un discord like.",
-  "main": "index.js",
+  "main": "server/main.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node server/main.js"
   },
   "keywords": [
     "chat",
@@ -14,5 +14,14 @@
     "ecv"
   ],
   "author": "Vincent Blancquart Charline Laporte Renaud Bourlon",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "babel": "^6.23.0",
+    "babel-core": "^6.26.0",
+    "body-parser": "^1.18.2",
+    "express": "^4.16.2",
+    "gulp": "^3.9.1",
+    "remarkable": "^1.7.1",
+    "socket.io": "^2.0.4"
+  }
 }
