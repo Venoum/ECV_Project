@@ -4,7 +4,9 @@
   "description": "Projet de fin de trimestre : création d'un discord like.",
   "main": "server/main.js",
   "scripts": {
-    "start": "node server/main.js"
+    "build": "babel server --out-dir dest/server",
+    "start": "npm run build && node dest/server/server.js",
+    "devserver": "babel-node server/server.js"
   },
   "keywords": [
     "chat",
@@ -23,5 +25,9 @@
     "gulp": "^3.9.1",
     "remarkable": "^1.7.1",
     "socket.io": "^2.0.4"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-preset-env": "^1.6.1"
   }
 }

@@ -23,25 +23,29 @@
 
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
-    <script src="/socket.io/socket.io.js"></script>
+
+
+    <script src="http://localhost:8080/socket.io/socket.io.js"></script>
+
     <script>
     $(function () {
       var socket = io();
       var user = null;
 
-      $('form').submit(function(e){
-        alert('ok')
-        // e.preventDefault()
-        // socket.emit('chat.message', $('#m').val());
-        // $('#m').val('');
-        // // return false : eviter d'envoyer vraiment le message via le formulaire
+      console.log(socket);
+
+      socket.emit('connection')
+
+      $('form').submit(function(){
+        socket.emit('chat.message', $('#m').val())
+        $('#m').val('')
+        // return false : eviter d'envoyer vraiment le message via le formulaire
         return false;
       });
 
       // ajoute message
-      socket.on('chat.message', function(msg, user){
-        console.log(msg, user)
-        $('#messages').append($('<li>').text(user + ' dit : ' + msg));
+      socket.on('chat.message', function(msg){
+        $('#messages').append($('<li>').text(msg));
       });
 
       // ajoute message de connection
