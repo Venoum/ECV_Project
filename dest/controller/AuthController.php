@@ -10,7 +10,17 @@ if($action === 'login_form'){
 
 if($action === 'login'){
 
-  // verification
+  // de base on set la valeur à faux
+  $statut_login = false;
+  $message_error_login = 'message erreur login';
+
+  if ( isset($_POST['pseudo']) && isset($_POST['password']) )
+  {
+    // TODO verification
+    $statut_login = true;
+  }
+
+
 
 
 }

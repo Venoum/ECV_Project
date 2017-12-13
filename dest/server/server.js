@@ -35,11 +35,8 @@ console.log(io);
 
 io.on('connection', function (socket) {
 
-  console.log('requet connexion ok');
-
   // ajout d'un utilisateur
   socket.on('user.connect', function (pseudo) {
-    console.log('in');
     socket.username = pseudo;
     socket.broadcast.emit('user.connect', pseudo);
     socket.emit('login.chat', pseudo);
@@ -59,20 +56,3 @@ io.on('connection', function (socket) {
 http.listen(8080, function () {
   return console.log('Example app listening on port 8080!');
 });
-
-// var app = require('http').createServer(handler);
-// var io = require('socket.io')(app);
-// app.listen(8080, function() {
-//     console.log('Server is running');
-// });
-// function handler(req, res) {
-//     res.writeHead(200);
-//     res.end('');
-// }
-//
-// io.on('connection', function(socket) {
-//     socket.on('subscribe', function() {
-//         console.log('subscribe request has arrived');
-//         console.log(socket.id);
-//     });
-// });

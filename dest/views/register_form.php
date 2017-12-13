@@ -11,7 +11,7 @@
 
   <form method="post" action="index.php?action=register">
     <input type="text" name="pseudo" value="">
-    <input type="mail" name="mail" value="">
+    <input type="email" name="mail" value="">
     <input type="password" name="password" value="">
     <input type="password" name="password_confirm" value="">
     <button type="submit" name="button">Se créer un compte</button>

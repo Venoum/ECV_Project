@@ -13,7 +13,6 @@ app.use(bodyParser.urlencoded({
   extented: true
 }))
 
-console.log(io)
 
 io.on('connection', function (socket) {
 

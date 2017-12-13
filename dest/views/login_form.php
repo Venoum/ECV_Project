@@ -11,10 +11,10 @@
 
       <h1><?= $welcome_message ?></h1>
 
-      <form action="login" method="post">
-        <input type="text" name="peudo">
+      <form method="post" action="index.php?action=login">
+        <input type="text" name="pseudo">
         <input type="password" name="password">
-        <button type="submit">se connecter</button>
+        <button type="submit" name="button">se connecter</button>
       </form>
 
       <a href="index.php?action=register_form">se créer un compte</a>
