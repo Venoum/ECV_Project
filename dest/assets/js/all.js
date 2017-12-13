@@ -13,6 +13,7 @@ var Channel = function () {
 
     t.name = name;
     t.section = document.getElementById(t.name);
+    t.sectionConnected = document.querySelector('#' + t.name + '.conected');
     t.form = document.querySelector('#' + t.name + ' form');
     t.messages = document.querySelector('#' + t.name + ' .messages');
 
@@ -29,9 +30,6 @@ var Channel = function () {
       console.log('in init');
       var t = this;
 
-      // affichage
-      t.openChat();
-
       // reception server
       t.fromServerSide();
 
@@ -40,27 +38,6 @@ var Channel = function () {
         e.preventDefault();
         t.sendMessage();
       });
-    }
-  }, {
-    key: 'openChat',
-    value: function openChat() {
-      var t = this;
-
-      var channelsNav = document.querySelectorAll('[data-name]');
-      var channelsWindow = document.querySelectorAll('.window-chat');
-
-      channelsNav.forEach(function (element) {
-        element.classList.remove('selected');
-      });
-
-      channelsWindow.forEach(function (element) {
-        element.classList.remove('selected');
-      });
-
-      var channelCurrent = document.querySelector('[data-name = ' + t.name + ']');
-      channelCurrent.classList.add('selected');
-      var windowCurrent = document.getElementById(t.name);
-      t.section.classList.add('selected');
     }
   }, {
     key: 'sendMessage',
@@ -117,17 +94,51 @@ var Homepage = function () {
       console.log('in init');
       var t = this;
 
+      t.startChannels();
+
       // watcher click de mes channels
       Object.keys(t.channels).map(function (key) {
         t.channels[key].addEventListener('click', function () {
-          var channelName = this.getAttribute('data-name');
-          new Channel(channelName);
+          t.name = this.getAttribute('data-name');
+          t.openChat();
         });
       });
 
       // afficher le profil
 
       // se déconnecter
+    }
+  }, {
+    key: 'startChannels',
+    value: function startChannels() {
+      var t = this;
+      console.log('in');
+      // watcher click de mes channels
+      Object.keys(t.channels).map(function (key) {
+        var channelName = t.channels[key].getAttribute('data-name');
+        new Channel(channelName);
+      });
+    }
+  }, {
+    key: 'openChat',
+    value: function openChat() {
+      var t = this;
+
+      var channelsNav = document.querySelectorAll('[data-name]');
+      var channelsWindow = document.querySelectorAll('.window-chat');
+
+      channelsNav.forEach(function (element) {
+        element.classList.remove('selected');
+      });
+
+      channelsWindow.forEach(function (element) {
+        element.classList.remove('selected');
+      });
+
+      var channelCurrent = document.querySelector('[data-name = ' + t.name + ']');
+      channelCurrent.classList.add('selected');
+      var windowCurrent = document.getElementById(t.name);
+      windowCurrent.classList.add('selected');
     }
   }]);
 
