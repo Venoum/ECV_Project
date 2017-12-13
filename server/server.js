@@ -13,9 +13,8 @@ app.use(bodyParser.urlencoded({
   extented: true
 }))
 
-
 io.on('connection', function (socket) {
-
+  console.log(socket.id)
   // ajout d'un utilisateur
   socket.on('user.connect', function (pseudo) {
     socket.username = pseudo
@@ -25,6 +24,7 @@ io.on('connection', function (socket) {
 
   // quand on envoi un message
   socket.on('chat.message', function (msg) {
+    console.log('msg', msg)
     socket.emit('chat.message', msg, socket.username)
   })
 

@@ -4,21 +4,134 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var Socket = function () {
-  function Socket() {
-    _classCallCheck(this, Socket);
+var Channel = function () {
+  function Channel(name) {
+    _classCallCheck(this, Channel);
 
-    console.log('SOCKET');
+    console.log('CHANNEL');
+    var t = this;
+
+    t.name = name;
+    t.section = document.getElementById(t.name);
+    t.form = document.querySelector('#' + t.name + ' form');
+    t.messages = document.querySelector('#' + t.name + ' .messages');
+
+    // lance la connexion
+    t.socket = io.connect('http://localhost:8080');
+
+    // lance les fonctions
+    t.init();
   }
 
-  _createClass(Socket, [{
+  _createClass(Channel, [{
     key: 'init',
     value: function init() {
       console.log('in init');
+      var t = this;
+
+      // affichage
+      t.openChat();
+
+      // reception server
+      t.fromServerSide();
+
+      // watcher du form
+      t.form.addEventListener('submit', function (e) {
+        e.preventDefault();
+        t.sendMessage();
+      });
+    }
+  }, {
+    key: 'openChat',
+    value: function openChat() {
+      var t = this;
+
+      var channelsNav = document.querySelectorAll('[data-name]');
+      var channelsWindow = document.querySelectorAll('.window-chat');
+
+      channelsNav.forEach(function (element) {
+        element.classList.remove('selected');
+      });
+
+      channelsWindow.forEach(function (element) {
+        element.classList.remove('selected');
+      });
+
+      var channelCurrent = document.querySelector('[data-name = ' + t.name + ']');
+      channelCurrent.classList.add('selected');
+      var windowCurrent = document.getElementById(t.name);
+      t.section.classList.add('selected');
+    }
+  }, {
+    key: 'sendMessage',
+    value: function sendMessage() {
+      var t = this;
+
+      var input = t.form.children[0];
+      var value = input.value;
+
+      t.socket.emit('chat.message', value);
+      input.value = '';
+    }
+  }, {
+    key: 'fromServerSide',
+    value: function fromServerSide() {
+      var t = this;
+      // affiche le message
+      t.socket.on('chat.message', function (msg) {
+        var li = document.createElement('li');
+        var p = document.createElement('p');
+        var value = document.createTextNode(msg);
+
+        p.appendChild(value);
+        li.appendChild(p);
+
+        t.messages.appendChild(li);
+      });
     }
   }]);
 
-  return Socket;
+  return Channel;
+}();
+'use strict';
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var Homepage = function () {
+  function Homepage() {
+    _classCallCheck(this, Homepage);
+
+    console.log('HOMEPAGE');
+    var t = this;
+
+    t.channels = document.getElementsByClassName('channel');
+
+    t.init();
+  }
+
+  _createClass(Homepage, [{
+    key: 'init',
+    value: function init() {
+      console.log('in init');
+      var t = this;
+
+      // watcher click de mes channels
+      Object.keys(t.channels).map(function (key) {
+        t.channels[key].addEventListener('click', function () {
+          var channelName = this.getAttribute('data-name');
+          new Channel(channelName);
+        });
+      });
+
+      // afficher le profil
+
+      // se déconnecter
+    }
+  }]);
+
+  return Homepage;
 }();
 'use strict';
 
@@ -29,13 +142,20 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 var Website = function () {
   function Website() {
     _classCallCheck(this, Website);
+
+    var t = this;
+
+    t.homepage = document.getElementById('chat');
   }
 
   _createClass(Website, [{
     key: 'init',
     value: function init() {
-
+      var t = this;
       console.log('website init');
+
+      // pour la page d'accueil
+      if (t.homepage) new Homepage();
     }
   }]);
 
@@ -43,4 +163,4 @@ var Website = function () {
 }();
 
 var website = new Website();
-website.init;
+website.init();
