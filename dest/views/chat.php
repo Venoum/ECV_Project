@@ -1,3 +1,19 @@
+<?php
+
+
+
+  if ($statut_register)
+    header('Location: index.php?action=chat');
+  else
+    header('Location: index.php?action=register_form&message=' + $message_error_register);
+?>
+
+
+
+
+
+
+
 <!DOCTYPE html>
 <html lang="fr-FR">
 <head>
@@ -6,10 +22,14 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Page d'accueil</title>
 
-    <link rel="stylesheet" href="http://localhost:8888/ECVDigital/Workshop/dest/assets/css/all.css">
+    <!-- <link rel="stylesheet" href="http://localhost/ECVDigital/Workshop/dest/assets/css/all.css"> -->
+    <link rel="stylesheet" href="http://localhost/ECV_Project/dest/assets/css/all.css">
 </head>
 <body id="chat">
 
+  <section>
+    <button>add</button>
+  </section>
   <section>
 
     <ul id="messages"></ul>
