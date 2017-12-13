@@ -28,13 +28,16 @@
     <script src="http://localhost:8080/socket.io/socket.io.js"></script>
 
     <script>
+
     $(function () {
-      var socket = io();
+
+
+      var socket = io.connect('http://localhost:8080');
       var user = null;
 
       console.log(socket);
 
-      socket.emit('connection')
+      // ajouter le message de connexion
 
       $('form').submit(function(){
         socket.emit('chat.message', $('#m').val())
@@ -48,11 +51,6 @@
         $('#messages').append($('<li>').text(msg));
       });
 
-      // ajoute message de connection
-      socket.on('user.connect', function(pseudo){
-        user = pseudo
-        $('#messages').append($('<li>').text(user+' s\'est connecté'));
-      })
     });
     </script>
 

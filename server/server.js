@@ -1,6 +1,6 @@
 import express from 'express'
 import path from 'path'
-// import bodyParser from 'body-parser'
+import bodyParser from 'body-parser'
 import httpBase from 'http'
 import ioBase from 'socket.io'
 
@@ -8,16 +8,15 @@ const app = express()
 const http = httpBase.Server(app)
 const io = ioBase(http)
 
-// app.use(bodyParser.json())
-// app.use(bodyParser.urlencoded({
-//   extented: true
-// }))
-
+app.use(bodyParser.json())
+app.use(bodyParser.urlencoded({
+  extented: true
+}))
 
 console.log(io)
 
 io.on('connection', function (socket) {
-  
+
   // ajout d'un utilisateur
   socket.on('user.connect', function (pseudo) {
     socket.username = pseudo
