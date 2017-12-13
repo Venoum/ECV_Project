@@ -7,7 +7,7 @@ class Website {
   init () {
 
     console.log('website init')
-    
+
   }
 }
 

@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Page d'accueil</title>
+
+    <link rel="stylesheet" href="http://localhost:8888/ECVDigital/Workshop/dest/assets/css/all.css">
 </head>
 <body id="chat">
 
@@ -25,6 +27,7 @@
 
   <script src="http://localhost:8080/socket.io/socket.io.js"></script>
 
+
   <script>
 
   $(function () {
@@ -33,7 +36,6 @@
     var socket = io.connect('http://localhost:8080');
     var user = null;
 
-    console.log(socket);
 
     // ajouter le message de connexion
 
