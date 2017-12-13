@@ -8,6 +8,8 @@ if($action === 'login_form'){
 
 }
 
+
+
 if($action === 'login'){
 
   // de base on set la valeur à faux
@@ -21,8 +23,6 @@ if($action === 'login'){
   }
 
 
-
-
 }
 
 
@@ -31,6 +31,8 @@ if($action === 'register_form'){
   $welcome_message = 'Bienvenue connectez - vous';
 
 }
+
+
 
 if($action === 'register'){
 

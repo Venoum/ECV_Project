@@ -10,7 +10,7 @@ const livereload = require('gulp-livereload')
 const autoprefixer = require('gulp-autoprefixer')
 
 const source = 'dev/'
-const dest = 'dest/assets'
+const dest = 'dest/assets/'
 
 // Compile Our Sass
 gulp.task('scss', function () {
@@ -37,8 +37,8 @@ gulp.task('scripts', function () {
 // Watch Files For Changes
 gulp.task('watch', function () {
   livereload.listen()
-  gulp.watch(source + 'scss/**/*.scss', ['scss'])
-  gulp.watch(source + 'js/**/*.js', ['scripts'])
+  gulp.watch(source + 'scss/*.scss', ['scss'])
+  gulp.watch(source + 'js/*.js', ['scripts'])
 })
 
 // Default Task

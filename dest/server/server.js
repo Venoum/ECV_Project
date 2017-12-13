@@ -31,8 +31,6 @@ app.use(_bodyParser2.default.urlencoded({
   extented: true
 }));
 
-console.log(io);
-
 io.on('connection', function (socket) {
 
   // ajout d'un utilisateur
