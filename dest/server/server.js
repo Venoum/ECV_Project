@@ -20,11 +20,16 @@ var _socket = require('socket.io');
 
 var _socket2 = _interopRequireDefault(_socket);
 
+var _remarkable = require('remarkable');
+
+var _remarkable2 = _interopRequireDefault(_remarkable);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var app = (0, _express2.default)();
 var http = _http2.default.Server(app);
 var io = (0, _socket2.default)(http);
+var md = new _remarkable2.default();
 
 app.use(_bodyParser2.default.json());
 app.use(_bodyParser2.default.urlencoded({
@@ -42,19 +47,22 @@ io.on('connection', function (socket) {
   // ajout d'un utilisateur
   socket.on('user.connect', function (pseudo) {
     socket.username = pseudo;
-    socket.broadcast.emit('user.connect', pseudo);
-    socket.emit('login.chat', pseudo);
+    for (var room in socket.rooms) {
+      var message = pseudo + ' a rejoint la conversation';
+      socket.broadcast.to(room).emit('user.connect', message);
+    }
   });
 
   // quand on envoi un message
   socket.on('chat.message', function (data) {
     console.log('msg', data.msg);
-    io.to(data.room).emit('chat.message', data.msg);
+    var msg = md.render(data.msg);
+    io.to(data.room).emit('chat.message', { msg: msg, pseudo: socket.username });
   });
 
   // quand se deconnecte
   socket.on('disconnect', function () {
-    console.log('a usr is disconnected');
+    console.log('user non connecté - A FAIRE !!');
   });
 });
 

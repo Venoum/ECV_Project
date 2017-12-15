@@ -3,10 +3,12 @@ import path from 'path'
 import bodyParser from 'body-parser'
 import httpBase from 'http'
 import ioBase from 'socket.io'
+import remarkable from 'remarkable'
 
 const app = express()
 const http = httpBase.Server(app)
 const io = ioBase(http)
+const md = new remarkable()
 
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({
@@ -24,19 +26,22 @@ io.on('connection', function (socket) {
   // ajout d'un utilisateur
   socket.on('user.connect', function (pseudo) {
     socket.username = pseudo
-    socket.broadcast.emit('user.connect', pseudo)
-    socket.emit('login.chat', pseudo)
+    for (var room in socket.rooms) {
+      var message = pseudo + ' a rejoint la conversation'
+      socket.broadcast.to(room).emit('user.connect', message)
+    }
   })
 
   // quand on envoi un message
   socket.on('chat.message', function (data) {
     console.log('msg', data.msg)
-    io.to(data.room).emit('chat.message', data.msg)
+    let msg = md.render(data.msg)
+    io.to(data.room).emit('chat.message', {msg: msg, pseudo: socket.username})
   })
 
   // quand se deconnecte
-  socket.on('disconnect', () => {
-    console.log('a usr is disconnected')
+  socket.on('disconnect', function () {
+    console.log('user non connecté - A FAIRE !!')
   })
 })
 

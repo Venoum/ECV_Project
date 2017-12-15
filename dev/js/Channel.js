@@ -8,7 +8,6 @@ class Channel {
     t.sectionConnected = document.querySelector('#' + t.name + '.conected')
     t.form = document.querySelector('#' + t.name + ' form')
     t.messages = document.querySelector('#' + t.name + ' .messages')
-    t.socket = io.connect('http://localhost:8080')
 
     // lance les fonctions
     t.init()
@@ -28,7 +27,7 @@ class Channel {
     })
 
     // rejoind la room
-    t.socket.emit('join.channel', t.name)
+    socket.emit('join.channel', t.name)
   }
 
   sendMessage () {
@@ -37,19 +36,31 @@ class Channel {
     let input = t.form.children[0]
     let value = input.value
 
-    t.socket.emit('chat.message', {msg: value, room: t.name})
+    socket.emit('chat.message', {msg: value, room: t.name})
     input.value = ''
   }
 
   fromServerSide () {
     const t = this
-    // affiche le message
-    t.socket.on('chat.message', function (msg) {
+    // affiche le message envoyé
+    socket.on('chat.message', function (data) {
       let li = document.createElement('li')
       let p = document.createElement('p')
-      let value = document.createTextNode(msg)
+      let pseudo = document.createTextNode(data.pseudo + ' à dit :')
+      p.classList.add('pseudo')
+      p.appendChild(pseudo)
+      li.appendChild(p)
+      li.innerHTML += data.msg
 
-      p.appendChild(value)
+      t.messages.appendChild(li)
+    })
+    // affiche le message de connexion
+    socket.on('user.connect', function (msg) {
+      let li = document.createElement('li')
+      let p = document.createElement('p')
+      let text = document.createTextNode(msg)
+      p.classList.add('connect')
+      p.appendChild(text)
       li.appendChild(p)
 
       t.messages.appendChild(li)

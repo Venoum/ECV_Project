@@ -4,6 +4,7 @@ class Homepage {
     const t = this
 
     t.channels = document.getElementsByClassName('channel')
+    socket = io.connect('http://localhost:8080')
 
     t.init()
   }
@@ -14,6 +15,9 @@ class Homepage {
 
     // initialisation des channels
     t.startChannels()
+
+    // message de connexion
+    t.userConnected()
 
     // watcher click de mes channels
     Object.keys(t.channels).map(function (key) {
@@ -55,6 +59,11 @@ class Homepage {
     channelCurrent.classList.add('selected')
     let windowCurrent = document.getElementById(t.name)
     windowCurrent.classList.add('selected')
+  }
 
+  userConnected () {
+    const t = this
+
+    socket.emit('user.connect', 'mon pseudo')
   }
 }

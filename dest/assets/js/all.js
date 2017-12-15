@@ -16,7 +16,6 @@ var Channel = function () {
     t.sectionConnected = document.querySelector('#' + t.name + '.conected');
     t.form = document.querySelector('#' + t.name + ' form');
     t.messages = document.querySelector('#' + t.name + ' .messages');
-    t.socket = io.connect('http://localhost:8080');
 
     // lance les fonctions
     t.init();
@@ -38,7 +37,7 @@ var Channel = function () {
       });
 
       // rejoind la room
-      t.socket.emit('join.channel', t.name);
+      socket.emit('join.channel', t.name);
     }
   }, {
     key: 'sendMessage',
@@ -48,20 +47,32 @@ var Channel = function () {
       var input = t.form.children[0];
       var value = input.value;
 
-      t.socket.emit('chat.message', { msg: value, room: t.name });
+      socket.emit('chat.message', { msg: value, room: t.name });
       input.value = '';
     }
   }, {
     key: 'fromServerSide',
     value: function fromServerSide() {
       var t = this;
-      // affiche le message
-      t.socket.on('chat.message', function (msg) {
+      // affiche le message envoyé
+      socket.on('chat.message', function (data) {
         var li = document.createElement('li');
         var p = document.createElement('p');
-        var value = document.createTextNode(msg);
+        var pseudo = document.createTextNode(data.pseudo + ' à dit :');
+        p.classList.add('pseudo');
+        p.appendChild(pseudo);
+        li.appendChild(p);
+        li.innerHTML += data.msg;
 
-        p.appendChild(value);
+        t.messages.appendChild(li);
+      });
+      // affiche le message de connexion
+      socket.on('user.connect', function (msg) {
+        var li = document.createElement('li');
+        var p = document.createElement('p');
+        var text = document.createTextNode(msg);
+        p.classList.add('connect');
+        p.appendChild(text);
         li.appendChild(p);
 
         t.messages.appendChild(li);
@@ -85,6 +96,7 @@ var Homepage = function () {
     var t = this;
 
     t.channels = document.getElementsByClassName('channel');
+    socket = io.connect('http://localhost:8080');
 
     t.init();
   }
@@ -97,6 +109,9 @@ var Homepage = function () {
 
       // initialisation des channels
       t.startChannels();
+
+      // message de connexion
+      t.userConnected();
 
       // watcher click de mes channels
       Object.keys(t.channels).map(function (key) {
@@ -140,6 +155,13 @@ var Homepage = function () {
       channelCurrent.classList.add('selected');
       var windowCurrent = document.getElementById(t.name);
       windowCurrent.classList.add('selected');
+    }
+  }, {
+    key: 'userConnected',
+    value: function userConnected() {
+      var t = this;
+
+      socket.emit('user.connect', 'mon pseudo');
     }
   }]);
 
