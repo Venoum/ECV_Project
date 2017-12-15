@@ -7,8 +7,8 @@
 	{
 		global $link;
 
-    // $mdp = ''
-    $mdp = 'root';
+    $mdp = '';
+    // $mdp = 'root';
 
 		if (empty($link))
 			$link = mysqli_connect('localhost', 'root', $mdp, 'ecvchat') or die (mysqli_connect_error());

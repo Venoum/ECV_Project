@@ -20,6 +20,7 @@ if($action === 'login'){
   {
     // TODO verification
     $statut_login = true;
+    //TODO pass id from user to chat controller
   }
 
 
@@ -39,7 +40,8 @@ if($action === 'register'){
   // verification
   if ( isset($_POST['pseudo']) && isset($_POST['mail']) && isset($_POST['password']) )
   {
-
+    //TODO pass id from user to chat controller
+    
     // de base on set la valeur à faux
     $statut_register = false;
 

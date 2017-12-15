@@ -2,10 +2,17 @@
 
 
 
-  if ($statut_register)
-    header('Location: index.php?action=chat');
-  else
-    header('Location: index.php?action=register_form&message=' + $message_error_register);
+  //on click
+  // if($flag==='true'){
+  //   header('Location: index.php?action=chat&b=fco');
+  // }
+  // else {
+
+  // }
+  var_dump($message_error_register);
+  var_dump($statut_register);
+  
+
 ?>
 
 
@@ -23,18 +30,19 @@
     <title>Page d'accueil</title>
 
     <!-- <link rel="stylesheet" href="http://localhost/ECVDigital/Workshop/dest/assets/css/all.css"> -->
-    <link rel="stylesheet" href="http://localhost/ECV_Project/dest/assets/css/all.css">
+    <!-- <link rel="stylesheet" href="http://localhost/ECV_Project/dest/assets/css/all.css"> -->
 </head>
 <body id="chat">
 
-  <section>
-    <button>add</button>
-  </section>
+    <form style="" method="post" action="index.php?action=chat&b=fco">
+        <input type="text" name="pseudo">
+        <button type="submit" name="button">se connecter</button>
+      </form>
   <section>
 
     <ul id="messages"></ul>
 
-    <form>
+    <form id="socket">
       <input id="m" autocomplete="off" /><button>Send</button>
     </form>
 
@@ -59,7 +67,7 @@
 
     // ajouter le message de connexion
 
-    $('form').submit(function(){
+    $('#socket').submit(function(){
       socket.emit('chat.message', $('#m').val())
       $('#m').val('')
       // return false : eviter d'envoyer vraiment le message via le formulaire
