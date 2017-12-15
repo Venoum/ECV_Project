@@ -3,6 +3,7 @@ class Website {
     const t = this
 
     t.homepage = document.getElementById('chat')
+    t.channels = document.getElementsByClassName('channel')
   }
 
   init () {
@@ -13,6 +14,3 @@ class Website {
     if (t.homepage) new Homepage()
   }
 }
-
-const website = new Website()
-website.init()

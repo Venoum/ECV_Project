@@ -8,7 +8,7 @@ var Channel = function () {
   function Channel(name) {
     _classCallCheck(this, Channel);
 
-    console.log('CHANNEL');
+    console.log('CHANNEL :', name);
     var t = this;
 
     t.name = name;
@@ -16,8 +16,6 @@ var Channel = function () {
     t.sectionConnected = document.querySelector('#' + t.name + '.conected');
     t.form = document.querySelector('#' + t.name + ' form');
     t.messages = document.querySelector('#' + t.name + ' .messages');
-
-    // lance la connexion
     t.socket = io.connect('http://localhost:8080');
 
     // lance les fonctions
@@ -27,7 +25,7 @@ var Channel = function () {
   _createClass(Channel, [{
     key: 'init',
     value: function init() {
-      console.log('in init');
+      console.log('in chanel init');
       var t = this;
 
       // reception server
@@ -38,6 +36,9 @@ var Channel = function () {
         e.preventDefault();
         t.sendMessage();
       });
+
+      // rejoind la room
+      t.socket.emit('join.channel', t.name);
     }
   }, {
     key: 'sendMessage',
@@ -47,7 +48,7 @@ var Channel = function () {
       var input = t.form.children[0];
       var value = input.value;
 
-      t.socket.emit('chat.message', value);
+      t.socket.emit('chat.message', { msg: value, room: t.name });
       input.value = '';
     }
   }, {
@@ -91,9 +92,10 @@ var Homepage = function () {
   _createClass(Homepage, [{
     key: 'init',
     value: function init() {
-      console.log('in init');
+      console.log('homepage init');
       var t = this;
 
+      // initialisation des channels
       t.startChannels();
 
       // watcher click de mes channels
@@ -112,7 +114,6 @@ var Homepage = function () {
     key: 'startChannels',
     value: function startChannels() {
       var t = this;
-      console.log('in');
       // watcher click de mes channels
       Object.keys(t.channels).map(function (key) {
         var channelName = t.channels[key].getAttribute('data-name');
@@ -157,6 +158,7 @@ var Website = function () {
     var t = this;
 
     t.homepage = document.getElementById('chat');
+    t.channels = document.getElementsByClassName('channel');
   }
 
   _createClass(Website, [{
@@ -172,6 +174,10 @@ var Website = function () {
 
   return Website;
 }();
+'use strict';
 
+var socket = 'a';
+
+// créer la classe
 var website = new Website();
 website.init();

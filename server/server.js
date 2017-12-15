@@ -14,7 +14,13 @@ app.use(bodyParser.urlencoded({
 }))
 
 io.on('connection', function (socket) {
-  console.log(socket.id)
+  console.log('connect id :', socket.id)
+
+  socket.on('join.channel', function (name) {
+    console.log(name)
+    socket.join(name)
+  })
+
   // ajout d'un utilisateur
   socket.on('user.connect', function (pseudo) {
     socket.username = pseudo
@@ -23,9 +29,9 @@ io.on('connection', function (socket) {
   })
 
   // quand on envoi un message
-  socket.on('chat.message', function (msg) {
-    console.log('msg', msg)
-    socket.emit('chat.message', msg, socket.username)
+  socket.on('chat.message', function (data) {
+    console.log('msg', data.msg)
+    io.to(data.room).emit('chat.message', data.msg)
   })
 
   // quand se deconnecte

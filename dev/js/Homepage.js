@@ -9,9 +9,10 @@ class Homepage {
   }
 
   init () {
-    console.log('in init')
+    console.log('homepage init')
     const t = this
 
+    // initialisation des channels
     t.startChannels()
 
     // watcher click de mes channels
@@ -29,14 +30,12 @@ class Homepage {
 
   startChannels () {
     const t = this
-    console.log('in')
     // watcher click de mes channels
     Object.keys(t.channels).map(function (key) {
       let channelName = t.channels[key].getAttribute('data-name')
       new Channel(channelName)
     })
   }
-
 
   openChat () {
     const t = this
@@ -56,5 +55,6 @@ class Homepage {
     channelCurrent.classList.add('selected')
     let windowCurrent = document.getElementById(t.name)
     windowCurrent.classList.add('selected')
+
   }
 }
