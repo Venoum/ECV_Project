@@ -40,8 +40,8 @@ io.on('connection', function (socket) {
   console.log('connect id :', socket.id);
 
   socket.on('join.channel', function (name) {
-    console.log(name);
     socket.join(name);
+    console.log('join: ' + name);
   });
 
   // ajout d'un utilisateur
@@ -56,8 +56,10 @@ io.on('connection', function (socket) {
   // quand on envoi un message
   socket.on('chat.message', function (data) {
     console.log('msg', data.msg);
+    console.log('room', data.room);
     var msg = md.render(data.msg);
-    io.to(data.room).emit('chat.message', { msg: msg, pseudo: socket.username });
+    console.log(socket.rooms[data.room]);
+    io.sockets.in(socket.rooms[data.room]).emit('chat.message', { msg: msg, pseudo: socket.username, room: data.room, id: data.id });
   });
 
   // quand se deconnecte

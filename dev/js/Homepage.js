@@ -4,7 +4,8 @@ class Homepage {
     const t = this
 
     t.channels = document.getElementsByClassName('channel')
-    socket = io.connect('http://localhost:8080')
+    t.userPseudo = window.localStorage.getItem('pseudo_user')
+    window.socket = io.connect('http://localhost:8080')
 
     t.init()
   }
@@ -64,6 +65,6 @@ class Homepage {
   userConnected () {
     const t = this
 
-    socket.emit('user.connect', 'mon pseudo')
+    socket.emit('user.connect', t.userPseudo)
   }
 }

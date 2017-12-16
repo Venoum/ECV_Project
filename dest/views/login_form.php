@@ -11,6 +11,10 @@
 
       <h1><?= $welcome_message ?></h1>
 
+      <?php if (isset($_GET['message'])): ?>
+        <p class="error"><?php echo $_GET['message']; ?></p>
+      <?php endif; ?>
+
       <form method="post" action="index.php?action=login">
         <input type="text" name="pseudo">
         <input type="password" name="password">

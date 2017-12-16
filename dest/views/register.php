@@ -1,8 +1,7 @@
 <?php
 
 
-
   if ($statut_register)
-    header('Location: index.php?action=chat');
+    header("Location: index.php?message=$message_account_created&action=login_form");
   else
-    header('Location: index.php?action=register_form&message=' + $message_error_register);
+    header("Location: index.php?message=$message_error_register&action=register_form");

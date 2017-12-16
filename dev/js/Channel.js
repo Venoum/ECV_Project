@@ -1,6 +1,5 @@
 class Channel {
   constructor (name) {
-    console.log('CHANNEL :', name)
     const t = this
 
     t.name = name
@@ -8,61 +7,134 @@ class Channel {
     t.sectionConnected = document.querySelector('#' + t.name + '.conected')
     t.form = document.querySelector('#' + t.name + ' form')
     t.messages = document.querySelector('#' + t.name + ' .messages')
+    t.buttons = document.querySelectorAll('#' + t.name + ' form .message-button')
+    t.inputFiles = document.querySelectorAll('#' + t.name + ' form .hidden input')
+    t.inputPreviewContainer = document.querySelector('#' + t.name + ' form .message-c .images-c')
 
-    // lance les fonctions
+    t.userId = window.localStorage.getItem('id_user')
+    t.userPseudo = window.localStorage.getItem('pseudo_user')
+
+    // lance init
     t.init()
   }
 
   init () {
-    console.log('in chanel init')
     const t = this
-
-    // reception server
+    // fonctions liées
     t.fromServerSide()
+    t.watchers()
 
+    // rejoint la room
+    window.socket.emit('join.channel', t.name)
+  }
+
+  watchers () {
+    const t = this
     // watcher du form
     t.form.addEventListener('submit', function (e) {
       e.preventDefault()
       t.sendMessage()
     })
 
-    // rejoind la room
-    socket.emit('join.channel', t.name)
+    // t.form = new Vue({
+    //   el: t.formElement,
+    //   methods: {
+    //     sendMessage: t.sendMessage.bind(t)
+    //   }
+    // })
+
+    // boutons du formulaire
+    Object.keys(t.buttons).map(function (key) {
+      t.buttons[key].addEventListener('click', function () {
+        var buttonName = this.getAttribute('data-button')
+        document.querySelector('#' + t.name + ' .' + buttonName).click()
+      })
+    })
+
+    // input
+    Object.keys(t.inputFiles).map(function (key) {
+      t.inputFiles[key].addEventListener('change', function () {
+        console.log('in change', this)
+        if (this.files && this.files[0]) {
+          let inputPreviewContainer = document.querySelector('#' + t.name + ' form .message-c .images-c')
+          let img = document.createElement('img')
+          let div = document.createElement('div')
+          div.classList.add('image')
+          div.classList.add('bt-c')
+          let edit = document.createElement('p')
+          let editTxt = document.createTextNode('E')
+          edit.classList.add('bt')
+          edit.classList.add('bt-ico-fill')
+          edit.classList.add('bt-bot-right')
+          edit.appendChild(editTxt)
+
+          var reader = new FileReader()
+          reader.onload = function (e) {
+            img.setAttribute('src', e.target.result)
+            img.classList.add('preview')
+          }
+          reader.readAsDataURL(this.files[0])
+
+          div.append(img)
+          div.append(edit)
+
+          inputPreviewContainer.append(div)
+        }
+      })
+    })
   }
 
   sendMessage () {
     const t = this
 
-    let input = t.form.children[0]
+    let input = t.form.querySelector('.message')
     let value = input.value
 
-    socket.emit('chat.message', {msg: value, room: t.name})
+    window.socket.emit('chat.message', {msg: value, room: t.name, pseudo: t.userPseudo, id: t.userId})
     input.value = ''
+
+    return false
   }
 
   fromServerSide () {
     const t = this
-    // affiche le message envoyé
-    socket.on('chat.message', function (data) {
-      let li = document.createElement('li')
-      let p = document.createElement('p')
-      let pseudo = document.createTextNode(data.pseudo + ' à dit :')
-      p.classList.add('pseudo')
-      p.appendChild(pseudo)
-      li.appendChild(p)
-      li.innerHTML += data.msg
 
-      t.messages.appendChild(li)
+    // affiche le message envoyé pour tous les users
+    window.socket.on('chat.message', function (data) {
+      console.log('ok')
+      if (data.room === t.name) {
+        let li = document.createElement('li')
+        if (data.id === t.userId) {
+          li.classList.add('sent')
+        } else {
+          li.classList.add('received')
+        }
+
+        let p = document.createElement('p')
+        let pseudo = null
+        if (data.pseudo === t.userPseudo) {
+          pseudo = document.createTextNode('vous avez dit :')
+        } else {
+          pseudo = document.createTextNode(data.pseudo + ' a dit :')
+        }
+        p.classList.add('pseudo')
+        p.appendChild(pseudo)
+        li.appendChild(p)
+        li.innerHTML += data.msg
+
+        t.messages.appendChild(li)
+      }
+
     })
     // affiche le message de connexion
-    socket.on('user.connect', function (msg) {
+    window.socket.on('user.connect', function (msg) {
       let li = document.createElement('li')
+      li.classList.add('new')
       let p = document.createElement('p')
       let text = document.createTextNode(msg)
       p.classList.add('connect')
       p.appendChild(text)
       li.appendChild(p)
-
       t.messages.appendChild(li)
     })
   }

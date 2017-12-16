@@ -8,7 +8,6 @@ var Channel = function () {
   function Channel(name) {
     _classCallCheck(this, Channel);
 
-    console.log('CHANNEL :', name);
     var t = this;
 
     t.name = name;
@@ -16,65 +15,138 @@ var Channel = function () {
     t.sectionConnected = document.querySelector('#' + t.name + '.conected');
     t.form = document.querySelector('#' + t.name + ' form');
     t.messages = document.querySelector('#' + t.name + ' .messages');
+    t.buttons = document.querySelectorAll('#' + t.name + ' form .message-button');
+    t.inputFiles = document.querySelectorAll('#' + t.name + ' form .hidden input');
+    t.inputPreviewContainer = document.querySelector('#' + t.name + ' form .message-c .images-c');
 
-    // lance les fonctions
+    t.userId = window.localStorage.getItem('id_user');
+    t.userPseudo = window.localStorage.getItem('pseudo_user');
+
+    // lance init
     t.init();
   }
 
   _createClass(Channel, [{
     key: 'init',
     value: function init() {
-      console.log('in chanel init');
       var t = this;
-
-      // reception server
+      // fonctions liées
       t.fromServerSide();
+      t.watchers();
 
+      // rejoint la room
+      window.socket.emit('join.channel', t.name);
+    }
+  }, {
+    key: 'watchers',
+    value: function watchers() {
+      var t = this;
       // watcher du form
       t.form.addEventListener('submit', function (e) {
         e.preventDefault();
         t.sendMessage();
       });
 
-      // rejoind la room
-      socket.emit('join.channel', t.name);
+      // t.form = new Vue({
+      //   el: t.formElement,
+      //   methods: {
+      //     sendMessage: t.sendMessage.bind(t)
+      //   }
+      // })
+
+      // boutons du formulaire
+      Object.keys(t.buttons).map(function (key) {
+        t.buttons[key].addEventListener('click', function () {
+          var buttonName = this.getAttribute('data-button');
+          document.querySelector('#' + t.name + ' .' + buttonName).click();
+        });
+      });
+
+      // input
+      Object.keys(t.inputFiles).map(function (key) {
+        t.inputFiles[key].addEventListener('change', function () {
+          console.log('in change', this);
+          if (this.files && this.files[0]) {
+            var inputPreviewContainer = document.querySelector('#' + t.name + ' form .message-c .images-c');
+            var img = document.createElement('img');
+            var div = document.createElement('div');
+            div.classList.add('image');
+            div.classList.add('bt-c');
+            var edit = document.createElement('p');
+            var editTxt = document.createTextNode('E');
+            edit.classList.add('bt');
+            edit.classList.add('bt-ico-fill');
+            edit.classList.add('bt-bot-right');
+            edit.appendChild(editTxt);
+
+            var reader = new FileReader();
+            reader.onload = function (e) {
+              img.setAttribute('src', e.target.result);
+              img.classList.add('preview');
+            };
+            reader.readAsDataURL(this.files[0]);
+
+            div.append(img);
+            div.append(edit);
+
+            inputPreviewContainer.append(div);
+          }
+        });
+      });
     }
   }, {
     key: 'sendMessage',
     value: function sendMessage() {
       var t = this;
 
-      var input = t.form.children[0];
+      var input = t.form.querySelector('.message');
       var value = input.value;
 
-      socket.emit('chat.message', { msg: value, room: t.name });
+      window.socket.emit('chat.message', { msg: value, room: t.name, pseudo: t.userPseudo, id: t.userId });
       input.value = '';
+
+      return false;
     }
   }, {
     key: 'fromServerSide',
     value: function fromServerSide() {
       var t = this;
-      // affiche le message envoyé
-      socket.on('chat.message', function (data) {
-        var li = document.createElement('li');
-        var p = document.createElement('p');
-        var pseudo = document.createTextNode(data.pseudo + ' à dit :');
-        p.classList.add('pseudo');
-        p.appendChild(pseudo);
-        li.appendChild(p);
-        li.innerHTML += data.msg;
 
-        t.messages.appendChild(li);
+      // affiche le message envoyé pour tous les users
+      window.socket.on('chat.message', function (data) {
+        console.log('ok');
+        if (data.room === t.name) {
+          var li = document.createElement('li');
+          if (data.id === t.userId) {
+            li.classList.add('sent');
+          } else {
+            li.classList.add('received');
+          }
+
+          var p = document.createElement('p');
+          var pseudo = null;
+          if (data.pseudo === t.userPseudo) {
+            pseudo = document.createTextNode('vous avez dit :');
+          } else {
+            pseudo = document.createTextNode(data.pseudo + ' a dit :');
+          }
+          p.classList.add('pseudo');
+          p.appendChild(pseudo);
+          li.appendChild(p);
+          li.innerHTML += data.msg;
+
+          t.messages.appendChild(li);
+        }
       });
       // affiche le message de connexion
-      socket.on('user.connect', function (msg) {
+      window.socket.on('user.connect', function (msg) {
         var li = document.createElement('li');
+        li.classList.add('new');
         var p = document.createElement('p');
         var text = document.createTextNode(msg);
         p.classList.add('connect');
         p.appendChild(text);
         li.appendChild(p);
-
         t.messages.appendChild(li);
       });
     }
@@ -96,7 +168,8 @@ var Homepage = function () {
     var t = this;
 
     t.channels = document.getElementsByClassName('channel');
-    socket = io.connect('http://localhost:8080');
+    t.userPseudo = window.localStorage.getItem('pseudo_user');
+    window.socket = io.connect('http://localhost:8080');
 
     t.init();
   }
@@ -161,7 +234,7 @@ var Homepage = function () {
     value: function userConnected() {
       var t = this;
 
-      socket.emit('user.connect', 'mon pseudo');
+      socket.emit('user.connect', t.userPseudo);
     }
   }]);
 
@@ -196,9 +269,7 @@ var Website = function () {
 
   return Website;
 }();
-'use strict';
-
-var socket = 'a';
+"use strict";
 
 // créer la classe
 var website = new Website();

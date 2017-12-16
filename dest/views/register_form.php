@@ -8,6 +8,9 @@
 </head>
 <body>
 
+  <?php if (isset($_GET['message'])): ?>
+    <p class="error"><?php echo $_GET['message']; ?></p>
+  <?php endif; ?>
 
   <form method="post" action="index.php?action=register">
     <input type="text" name="pseudo" value="">

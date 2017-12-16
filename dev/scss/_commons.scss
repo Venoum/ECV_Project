@@ -1,0 +1,30 @@
+.bt {
+  cursor: pointer;
+}
+
+.bt-c {
+  position: relative
+}
+
+.bt-bot-right {
+  position: absolute;
+  right: 1%;
+  top: auto;
+  left: auto;
+  bottom: 1%;
+}
+
+.bt-top-right {
+  position: absolute;
+  right: 1%;
+  top: 1%;
+  left: auto;
+  bottom: auto;
+}
+
+.bt-ico-fill {
+  background-color: red;
+  color: white;
+  width: 10px;
+  height: 10px;
+}

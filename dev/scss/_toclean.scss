@@ -24,6 +24,7 @@
 
 
   .window-chat {
+
     position: fixed;
     top: 100px;
     width: 100vw;
@@ -42,27 +43,67 @@
 
     .messages {
       width: 100%;
-      height: 500px;
+      height: 400px;
 
       .sent {
-        text-align: right
+        text-align: right;
+        background-color: lightblue;
       }
 
       .received {
-        text-align: left
+        text-align: left;
+        background-color: lightpink;
       }
 
+      .new {
+        text-align: center;
+        background-color: yellow;
+      }
 
     }
 
     form {
 
-      input {
-        width: 90%;
+
+
+      .message-c {
+        width: 70%;
+        height: 50px;
+
+        .images-c {
+          width: 100%;
+
+          .image {
+            height: 75px;
+            max-width: 75px;
+            width: auto;
+            display: inline-block;
+
+            img {
+              width: 100%;
+              height: 100%;
+              object-fit: contain;
+              background-color: black;
+              object-position: center;
+            }
+
+          }
+        }
+      }
+
+      .message-button {
+        display: inline-block;
+        margin: 0 10px;
+        cursor: pointer;
+        border: solid 1px black;
       }
 
       button {
         width: 10%
+      }
+
+      .hidden {
+        display: none;
       }
     }
 
