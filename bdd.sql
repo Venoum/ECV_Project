@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Client :  localhost
--- Généré le :  Mer 13 Décembre 2017 à 00:16
+-- Généré le :  Sam 16 Décembre 2017 à 18:47
 -- Version du serveur :  5.6.33
 -- Version de PHP :  7.0.12
 
@@ -85,19 +85,10 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`us_id`, `us_pseudo`, `us_mail`, `us_mdp`, `us_avatar`) VALUES
-(1, 'pseudo', 'mail', '$2y$10$1he0IVRD5cwaSNrACVFPBeyUD5jmSwdwVBcTeWK/qoA4RDwjFsljW', ''),
-(2, 'pseudo', 'mail', '$2y$10$rQbl5agOKxt4J/C4AWdZWOHyGiLEyLh38m2Dy2sDTW8rZRp3JLzKC', ''),
-(3, 'charline', 'charline@gmail.com', '$2y$10$Z0dmaOI2kEVkSceIeQIIgeDF.mhXqqOHAMHuZyachcpNz3iuL.UXe', ''),
-(4, 'b', 'b', '$2y$10$LqedPaLkKZv.OCxeidAn0OYMS0pvOHkqlxwITbKMSuFAgLVzO3lMO', ''),
-(5, 'c', 'c', '$2y$10$w.dD8tKdVVjHTrMFOn0iS.m75K0ehGwq2Qf2.RRWuEwjThTEYw05W', ''),
-(6, 'd', 'd', '$2y$10$2L4bhgumab267y3LZ7tyTOpMmqeNgTkwrH5tkcQXzIfCA7xG1oPni', ''),
-(7, 'e', 'e', '$2y$10$bTg/1N6Elo2HS254QHrsZ.EnMnwcEnWzKI2jHd6LNYlPASCgLmEnW', ''),
-(8, 'f', 'f', '$2y$10$DPWjqKdEagB1izqcuh.Ui.OEE6i97S2lf6XGiTsrrbCoeH0tF5CsS', ''),
-(9, 'g', 'g', '$2y$10$cWJRtc3Qo/JxouuS38htluqKOdmUocc61avpEq2Z63BXC.90Qz4y6', ''),
-(10, 'h', 'h', '$2y$10$Jl7HycSbSaShvVK6/lBmguY2ngPRKxqtURl4zOPISVzgedFqMxSnO', ''),
-(11, 'i', 'i', '$2y$10$7kigGmk3NJGHroRNU9GCt.Y6oRlYhEd5ARuEQCch7CqVV6f8srCae', ''),
-(12, 'jj', 'j', '$2y$10$CGsn/uW0f7SInkr0oU0jludmdSu7Kw3sIXeFzRfFWGQjb5nUzJzKa', ''),
-(13, 'k', 'k', '$2y$10$V/Ub83QrRVwOtDy5milDqOENVWQIExPcCw2c2dy6V2ep25FddAdY2', '');
+(14, 'charline', 'charline@gmail.com', '$2y$10$aa8GyVvUHdGIWY7rF8pXxeRV4tdFK67d414jEfs0udlKVZPxlzn7y', ''),
+(31, 'antoine', 'antoine@gmail.com', '$2y$10$r1QisSDCeWUcyO7g2YeGr.1Q/1HQ81UWVtiVp9Co7KrPryFp41oVq', ''),
+(32, 'a', 'charline@gmail.com', '$2y$10$72FxKtMHrVqZJJiGuGohmuTcTsb3Zj/qBxPfFID3kdUl/ulL/3rvi', ''),
+(33, 'charline', 'a', '$2y$10$HcW7oTlQAUODYvjOzC0.Y.f6Y4a/1dmh9ew3RCB.QYSYRju8yKLNS', '');
 
 --
 -- Index pour les tables exportées
@@ -161,4 +152,4 @@ ALTER TABLE `messages`
 -- AUTO_INCREMENT pour la table `users`
 --
 ALTER TABLE `users`
-  MODIFY `us_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'identifiant de l''utilisateur', AUTO_INCREMENT=14;
+  MODIFY `us_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'identifiant de l''utilisateur', AUTO_INCREMENT=34;

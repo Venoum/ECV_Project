@@ -5,8 +5,8 @@ class Channel {
     t.name = name
     t.section = document.getElementById(t.name)
     t.sectionConnected = document.querySelector('#' + t.name + '.conected')
-    t.form = document.querySelector('#' + t.name + ' form')
-    t.messages = document.querySelector('#' + t.name + ' .messages')
+    t.formElement = document.querySelector('#' + t.name + ' form')
+    t.messages = document.getElementById(t.name + 'Message')
     t.buttons = document.querySelectorAll('#' + t.name + ' form .message-button')
     t.inputFiles = document.querySelectorAll('#' + t.name + ' form .hidden input')
     t.inputPreviewContainer = document.querySelector('#' + t.name + ' form .message-c .images-c')
@@ -30,18 +30,25 @@ class Channel {
 
   watchers () {
     const t = this
-    // watcher du form
-    t.form.addEventListener('submit', function (e) {
-      e.preventDefault()
-      t.sendMessage()
+    // // watcher du form
+    // t.form.addEventListener('submit', function (e) {
+    //   e.preventDefault()
+    //   t.sendMessage()
+    // })
+
+    t.form = new Vue({
+      el: t.formElement,
+      methods: {
+        sendMessage: t.sendMessage.bind(t)
+      }
     })
 
-    // t.form = new Vue({
-    //   el: t.formElement,
-    //   methods: {
-    //     sendMessage: t.sendMessage.bind(t)
-    //   }
-    // })
+    t.messageList = new Vue({
+      el: '#' + t.name + 'Message',
+      data: {
+        messages: []
+      }
+    })
 
     // boutons du formulaire
     Object.keys(t.buttons).map(function (key) {
@@ -84,10 +91,11 @@ class Channel {
     })
   }
 
-  sendMessage () {
+  sendMessage (e) {
+    e.preventDefault()
     const t = this
 
-    let input = t.form.querySelector('.message')
+    let input = document.getElementById(t.name + 'Input')
     let value = input.value
 
     window.socket.emit('chat.message', {msg: value, room: t.name, pseudo: t.userPseudo, id: t.userId})
@@ -101,30 +109,24 @@ class Channel {
 
     // affiche le message envoyé pour tous les users
     window.socket.on('chat.message', function (data) {
-      console.log('id user', t.userId)
       if (data.room === t.name) {
-        let li = document.createElement('li')
+        // let li = document.createElement('li')
+        let classMessage = null
         if (data.id === t.userId) {
-          li.classList.add('sent')
+          classMessage = 'sent'
         } else {
-          li.classList.add('received')
+          classMessage = 'received'
         }
 
-        let p = document.createElement('p')
         let pseudo = null
         if (data.pseudo === t.userPseudo) {
-          pseudo = document.createTextNode('vous avez dit :')
+          pseudo = 'vous :'
         } else {
-          pseudo = document.createTextNode(data.pseudo + ' a dit :')
+          pseudo = data.pseudo + ' :'
         }
-        p.classList.add('pseudo')
-        p.appendChild(pseudo)
-        li.appendChild(p)
-        li.innerHTML += data.msg
 
-        t.messages.appendChild(li)
+        t.messageList.messages.push({ content: '<p class="pseudo">' + pseudo + '</p>' + data.msg, class: classMessage })
       }
-
     })
     // affiche le message de connexion
     window.socket.on('user.connect', function (msg) {

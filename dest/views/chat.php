@@ -11,6 +11,8 @@
 </head>
 <body id="chat">
 
+
+
   <?php
 
   $id_user = strval($_COOKIE['id_user']);
@@ -27,26 +29,35 @@
 
 
 
+
   <ul id="channels">
     <li class="channel" data-name="channel1">Channel 1</li>
     <li class="channel" data-name="channel2">Channel 2</li>
     <li class="channel" data-name="channel3">Channel 3</li>
   </ul>
 
+
+
   <section class="window-chat" id="channel1">
 
     <h6 class="channel-name">channel 1</h6>
 
-    <ul class="messages"></ul>
+    <ul class="messages" id="channel1Message">
+      <message-item
+          v-for="message in messages"
+          v-bind:message="message"
+          v-bind:key="message.id"
+        ></message-item>
+    </ul>
 
-    <form>
+    <form v-on:submit="sendMessage">
 
       <div class="message-c">
 
         <div class="images-c">
         </div>
 
-        <input class="message" id='channel1Input' autocomplete="off" />
+        <textarea class="message" id='channel1Input' autocomplete="off" ></textarea>
 
         <div class="message-button" data-button="buttonCamera">
           <p>camera</p>
@@ -68,19 +79,27 @@
 
   </section>
 
+
+
   <section class="window-chat" id="channel2">
 
     <h6 class="channel-name">channel 2</h6>
 
-    <ul class="messages"></ul>
+    <ul class="messages" id="channel2Message">
+      <message-item
+          v-for="message in messages"
+          v-bind:message="message"
+          v-bind:key="message.id"
+        ></message-item>
+    </ul>
 
-    <form>
+    <form v-on:submit="sendMessage">
 
       <div class="images-c">
       </div>
 
       <div class="message-c">
-        <input class="message" autocomplete="off" />
+        <textarea class="message" id='channel2Input' autocomplete="off" ></textarea>
       </div>
 
       <div class="message-button" data-button="buttonCamera">
@@ -101,19 +120,27 @@
 
   </section>
 
+
+
   <section class="window-chat" id="channel3">
 
-    <h6 class="channel-name">channel 3</h6>
+    <h6 class="channel-name" id="channel3Message">channel 3</h6>
 
-    <ul class="messages"></ul>
+    <ul class="messages">
+      <message-item
+          v-for="message in messages"
+          v-bind:message="message"
+          v-bind:key="message.id"
+        ></message-item>
+    </ul>
 
-    <form>
+    <form v-on:submit="sendMessage">
 
       <div class="images-c">
       </div>
 
       <div class="message-c">
-        <input class="message" autocomplete="off" />
+        <textarea class="message" id='channel3Input' autocomplete="off"></textarea>
       </div>
 
       <div class="message-button" data-button="buttonCamera">
@@ -139,6 +166,7 @@
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
   <script src="http://localhost:8080/socket.io/socket.io.js"></script>
   <script type="text/javascript" src="http://localhost:8888/ECVDigital/Workshop/dest/assets/js/all.js"></script>
+
 
 </body>
 </html>
