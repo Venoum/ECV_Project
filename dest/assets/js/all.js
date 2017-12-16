@@ -114,7 +114,7 @@ var Channel = function () {
 
       // affiche le message envoyé pour tous les users
       window.socket.on('chat.message', function (data) {
-        console.log('ok');
+        console.log('id user', t.userId);
         if (data.room === t.name) {
           var li = document.createElement('li');
           if (data.id === t.userId) {

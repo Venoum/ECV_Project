@@ -55,11 +55,9 @@ io.on('connection', function (socket) {
 
   // quand on envoi un message
   socket.on('chat.message', function (data) {
-    console.log('msg', data.msg);
-    console.log('room', data.room);
     var msg = md.render(data.msg);
     console.log(socket.rooms[data.room]);
-    io.sockets.in(socket.rooms[data.room]).emit('chat.message', { msg: msg, pseudo: socket.username, room: data.room, id: data.id });
+    io.to(socket.rooms[data.room]).emit('chat.message', { msg: msg, pseudo: socket.username, room: data.room, id: data.id });
   });
 
   // quand se deconnecte
