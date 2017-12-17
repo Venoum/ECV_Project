@@ -22,6 +22,7 @@ var Channel = function () {
     t.userId = window.localStorage.getItem('id_user');
     t.userPseudo = window.localStorage.getItem('pseudo_user');
 
+    t.ajaxUrl = 'http://localhost:8888/ECVDigital/Workshop/dest/controller/AjaxRequests.php';
     // lance init
     t.init();
   }
@@ -30,23 +31,21 @@ var Channel = function () {
     key: 'init',
     value: function init() {
       var t = this;
+
+      // rejoint la room
+      console.log('emit', t.name);
+      window.socket.emit('join.channel', { id: t.userId, room: t.name });
       // fonctions liées
       t.fromServerSide();
       t.watchers();
 
-      // rejoint la room
-      window.socket.emit('join.channel', t.name);
+      // charge les denriers messages
+      t.loadMessage();
     }
   }, {
     key: 'watchers',
     value: function watchers() {
       var t = this;
-      // // watcher du form
-      // t.form.addEventListener('submit', function (e) {
-      //   e.preventDefault()
-      //   t.sendMessage()
-      // })
-
       t.form = new Vue({
         el: t.formElement,
         methods: {
@@ -69,37 +68,37 @@ var Channel = function () {
         });
       });
 
-      // input
-      Object.keys(t.inputFiles).map(function (key) {
-        t.inputFiles[key].addEventListener('change', function () {
-          console.log('in change', this);
-          if (this.files && this.files[0]) {
-            var inputPreviewContainer = document.querySelector('#' + t.name + ' form .message-c .images-c');
-            var img = document.createElement('img');
-            var div = document.createElement('div');
-            div.classList.add('image');
-            div.classList.add('bt-c');
-            var edit = document.createElement('p');
-            var editTxt = document.createTextNode('E');
-            edit.classList.add('bt');
-            edit.classList.add('bt-ico-fill');
-            edit.classList.add('bt-bot-right');
-            edit.appendChild(editTxt);
-
-            var reader = new FileReader();
-            reader.onload = function (e) {
-              img.setAttribute('src', e.target.result);
-              img.classList.add('preview');
-            };
-            reader.readAsDataURL(this.files[0]);
-
-            div.append(img);
-            div.append(edit);
-
-            inputPreviewContainer.append(div);
-          }
-        });
-      });
+      // // input
+      // Object.keys(t.inputFiles).map(function (key) {
+      //   t.inputFiles[key].addEventListener('change', function () {
+      //     console.log('in change', this)
+      //     if (this.files && this.files[0]) {
+      //       let inputPreviewContainer = document.querySelector('#' + t.name + ' form .message-c .images-c')
+      //       let img = document.createElement('img')
+      //       let div = document.createElement('div')
+      //       div.classList.add('image')
+      //       div.classList.add('bt-c')
+      //       let edit = document.createElement('p')
+      //       let editTxt = document.createTextNode('E')
+      //       edit.classList.add('bt')
+      //       edit.classList.add('bt-ico-fill')
+      //       edit.classList.add('bt-bot-right')
+      //       edit.appendChild(editTxt)
+      //
+      //       var reader = new FileReader()
+      //       reader.onload = function (e) {
+      //         img.setAttribute('src', e.target.result)
+      //         img.classList.add('preview')
+      //       }
+      //       reader.readAsDataURL(this.files[0])
+      //
+      //       div.append(img)
+      //       div.append(edit)
+      //
+      //       inputPreviewContainer.append(div)
+      //     }
+      //   })
+      // })
     }
   }, {
     key: 'sendMessage',
@@ -110,7 +109,7 @@ var Channel = function () {
       var input = document.getElementById(t.name + 'Input');
       var value = input.value;
 
-      window.socket.emit('chat.message', { msg: value, room: t.name, pseudo: t.userPseudo, id: t.userId });
+      window.socket.emit('chat.message', { msg: value, room: t.name, id: t.userId });
       input.value = '';
 
       return false;
@@ -123,7 +122,6 @@ var Channel = function () {
       // affiche le message envoyé pour tous les users
       window.socket.on('chat.message', function (data) {
         if (data.room === t.name) {
-          // let li = document.createElement('li')
           var classMessage = null;
           if (data.id === t.userId) {
             classMessage = 'sent';
@@ -138,20 +136,102 @@ var Channel = function () {
             pseudo = data.pseudo + ' :';
           }
 
-          t.messageList.messages.push({ content: '<p class="pseudo">' + pseudo + '</p>' + data.msg, class: classMessage });
+          t.addMessage({ pseudo: pseudo, messageContent: data.msg, messageId: data.idMessage, class: classMessage });
         }
       });
       // affiche le message de connexion
-      window.socket.on('user.connect', function (msg) {
-        var li = document.createElement('li');
-        li.classList.add('new');
-        var p = document.createElement('p');
-        var text = document.createTextNode(msg);
-        p.classList.add('connect');
-        p.appendChild(text);
-        li.appendChild(p);
-        t.messages.appendChild(li);
+      window.socket.on('user.connect', function (data) {
+        if (data.room === t.name && data.id !== t.userId) {
+          var classMessage = 'new';
+          var pseudo = data.pseudo;
+
+          t.messageList.messages.push({ content: '<p>' + pseudo + ' est connecté</p>', class: classMessage });
+        }
       });
+    }
+  }, {
+    key: 'addMessage',
+    value: function addMessage(data) {
+      var t = this;
+
+      var content = '<p class="pseudo">' + data.pseudo + '</p>' + data.messageContent;
+      var idChannel = t.getChannelName();
+      t.messageList.messages.push({ content: content, class: data.class, idMessage: data.idMessage, idChannel: idChannel });
+    }
+  }, {
+    key: 'loadMessage',
+    value: function loadMessage() {
+      var t = this;
+
+      var lastMessage = document.querySelectorAll('#' + t.name + ' li');
+      console.log(lastMessage.length);
+      var channelId = t.getChannelName();
+
+      var dataToSend = {
+        nbMessagesLoad: 10,
+        idChannel: channelId
+
+        // if (lastMessage.length) dataToSend['idLastMessage'] = String(lastMessage[0].getAttribute('data-id-message'))
+        // let request = new XMLHttpRequest()
+        // request.open('POST', t.ajaxUrl + '?action=load_more', true)
+        // request.setRequestHeader('Content-type', 'application/json')
+        //
+        // request.send(JSON.stringify(dataToSend))
+        //
+        // request.onreadystatechange = function () {
+        //   if (request.readyState === 4) {
+        //     var json = JSON.parse(request.responseText)
+        //     console.log(json)
+        //   }
+        // }
+      };$.ajax({
+        url: t.ajaxUrl + '?action=load_more',
+        type: 'POST',
+        data: dataToSend,
+        success: function success(data) {
+          var response = JSON.parse(data);
+          if (response.status === 'ok') {
+            var messages = response.content;
+            console.log(response.request);
+            var _iteratorNormalCompletion = true;
+            var _didIteratorError = false;
+            var _iteratorError = undefined;
+
+            try {
+              for (var _iterator = messages[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+                var message = _step.value;
+
+                // console.log(message)
+                var className = message.user === t.userId ? 'sent' : 'received';
+                // let content = '<p class="pseudo">' + data.pseudo + '</p>' + data.messageContent
+                t.messageList.messages.push({ content: message.content, class: className, idMessage: message.id, idChannel: channelId });
+              }
+            } catch (err) {
+              _didIteratorError = true;
+              _iteratorError = err;
+            } finally {
+              try {
+                if (!_iteratorNormalCompletion && _iterator.return) {
+                  _iterator.return();
+                }
+              } finally {
+                if (_didIteratorError) {
+                  throw _iteratorError;
+                }
+              }
+            }
+          }
+        },
+        error: function error(err) {
+          console.log(err);
+        }
+      });
+    }
+  }, {
+    key: 'getChannelName',
+    value: function getChannelName() {
+      var t = this;
+      return Number(t.name.replace('channel', ''));
     }
   }]);
 
@@ -183,15 +263,20 @@ var Homepage = function () {
       console.log('homepage init');
       var t = this;
 
-      // initialisation des channels
-      t.startChannels();
-
       // message de connexion
       t.userConnected();
+
+      // initialisation des channels
+      t.startChannels();
 
       // watcher click de mes channels
       Object.keys(t.channels).map(function (key) {
         t.channels[key].addEventListener('click', function () {
+          // enleve les class
+          Object.keys(t.channels).map(function (key) {
+            t.channels[key].classList.remove('selected');
+          });
+          this.classList.add('selected');
           t.name = this.getAttribute('data-name');
           t.openChat();
         });
@@ -237,7 +322,7 @@ var Homepage = function () {
     value: function userConnected() {
       var t = this;
 
-      socket.emit('user.connect', t.userPseudo);
+      window.socket.emit('user.connect', t.userPseudo);
     }
   }]);
 
@@ -281,5 +366,5 @@ website.init();
 
 Vue.component('message-item', {
   props: ['message'],
-  template: '<li v-bind:class="message.class" v-html="message.content"></li>'
+  template: '<li v-bind:data-id-message="message.idMessage" v-bind:data-id-channel="message.idChannel" v-bind:class="message.class" v-html="message.content"></li>'
 });

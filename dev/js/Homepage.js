@@ -14,15 +14,20 @@ class Homepage {
     console.log('homepage init')
     const t = this
 
-    // initialisation des channels
-    t.startChannels()
-
     // message de connexion
     t.userConnected()
+
+    // initialisation des channels
+    t.startChannels()
 
     // watcher click de mes channels
     Object.keys(t.channels).map(function (key) {
       t.channels[key].addEventListener('click', function () {
+        // enleve les class
+        Object.keys(t.channels).map(function (key) {
+          t.channels[key].classList.remove('selected')
+        })
+        this.classList.add('selected')
         t.name = this.getAttribute('data-name')
         t.openChat()
       })
@@ -65,6 +70,6 @@ class Homepage {
   userConnected () {
     const t = this
 
-    socket.emit('user.connect', t.userPseudo)
+    window.socket.emit('user.connect', t.userPseudo)
   }
 }

@@ -20,21 +20,28 @@ a {
 ul {
   list-style: none; }
 
-#chat #channels {
+#chat nav {
   position: fixed;
   top: 0;
   left: 0;
   border-bottom: solid 2px black;
   width: 100%;
   text-align: center; }
-  #chat #channels li {
-    background-color: lightgrey;
-    padding: 10px;
-    margin: 10px;
-    cursor: pointer;
+  #chat nav ul {
     display: inline-block; }
-    #chat #channels li.selected {
-      background-color: pink; }
+    #chat nav ul li {
+      padding: 10px;
+      margin: 10px;
+      cursor: pointer;
+      display: inline-block; }
+      #chat nav ul li.selected {
+        background-color: pink !important; }
+    #chat nav ul#channels li {
+      background-color: lightgrey;
+      color: black; }
+    #chat nav ul#friends li {
+      background-color: black;
+      color: white; }
 
 #chat .window-chat {
   position: fixed;

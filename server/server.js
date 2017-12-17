@@ -4,11 +4,25 @@ import bodyParser from 'body-parser'
 import httpBase from 'http'
 import ioBase from 'socket.io'
 import remarkable from 'remarkable'
+import mysql from 'mysql'
 
 const app = express()
 const http = httpBase.Server(app)
 const io = ioBase(http)
 const md = new remarkable()
+
+const con = mysql.createConnection({
+  host: 'localhost',
+  user: 'root',
+  password: 'root',
+  database: 'ecvchat',
+  port: '8889'
+})
+
+con.connect(function (err) {
+  if (err) console.log(err)
+  else console.log('Connected Mysql')
+})
 
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({
@@ -18,25 +32,40 @@ app.use(bodyParser.urlencoded({
 io.on('connection', function (socket) {
   console.log('connect id :', socket.id)
 
-  socket.on('join.channel', function (name) {
-    socket.join(name)
-    console.log('join: ' + name)
-  })
-
   // ajout d'un utilisateur
   socket.on('user.connect', function (pseudo) {
     socket.username = pseudo
-    for (var room in socket.rooms) {
-      var message = pseudo + ' a rejoint la conversation'
-      socket.broadcast.to(room).emit('user.connect', message)
-    }
+    console.log('user', socket.username)
+  })
+
+  // message de connection
+  socket.on('join.channel', function (data) {
+    socket.join(data.room)
+    console.log('data', data)
+    socket.broadcast.emit('user.connect', {id: data.id, room: data.room, pseudo: socket.username})
   })
 
   // quand on envoi un message
   socket.on('chat.message', function (data) {
+    console.log(socket.rooms)
     let msg = md.render(data.msg)
-    console.log(socket.rooms[data.room])
-    io.to(socket.rooms[data.room]).emit('chat.message', {msg: msg, pseudo: socket.username, room: data.room, id: data.id})
+    let room = socket.rooms[data.room]
+
+    // push bdd
+    let idChannel = Number(data.room.replace('channel', ''))
+    // faire la date comme il faut
+    let date = new Date()
+    let todayHour = date.getHours()
+    let todayMinutes = date.getMinutes()
+    var sql = "INSERT INTO messages (msg_id_channel, msg_id_user, msg_content, msg_date) VALUES ('" + idChannel + "', '" + data.id + "', '" + msg + "', '" + (todayHour + ':' + todayMinutes) + "')"
+    con.query(sql, function (err, result) {
+      // TODO : envoyer message erreur côté client
+      if (err) console.log(err)
+      // si ok on envoie le message
+      else {
+        io.to(room).emit('chat.message', {msg: msg, pseudo: socket.username, room: data.room, id: data.id, idMessage: result.insertId})
+      }
+    })
   })
 
   // quand se deconnecte

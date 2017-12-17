@@ -15,6 +15,8 @@
         <p class="error"><?php echo $_GET['message']; ?></p>
       <?php endif; ?>
 
+      <?php echo $login_form ?>
+
       <form method="post" action="index.php?action=login">
         <input type="text" name="pseudo">
         <input type="password" name="password">

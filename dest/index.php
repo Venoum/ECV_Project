@@ -3,6 +3,9 @@
 // ROUTING
 require_once('config/route.php');
 require_once('models/dbtools.php');
+require_once('models/form_generator.php');
+require_once('models/channel.class.php');
+
 
 if (empty($_GET['action']))
 	$action = 'login_form';

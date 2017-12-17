@@ -14,28 +14,27 @@ class Channel {
     t.userId = window.localStorage.getItem('id_user')
     t.userPseudo = window.localStorage.getItem('pseudo_user')
 
+    t.ajaxUrl = 'http://localhost:8888/ECVDigital/Workshop/dest/controller/AjaxRequests.php'
     // lance init
     t.init()
   }
 
   init () {
     const t = this
+
+    // rejoint la room
+    console.log('emit', t.name)
+    window.socket.emit('join.channel', {id: t.userId, room: t.name})
     // fonctions liées
     t.fromServerSide()
     t.watchers()
 
-    // rejoint la room
-    window.socket.emit('join.channel', t.name)
+    // charge les denriers messages
+    t.loadMessage()
   }
 
   watchers () {
     const t = this
-    // // watcher du form
-    // t.form.addEventListener('submit', function (e) {
-    //   e.preventDefault()
-    //   t.sendMessage()
-    // })
-
     t.form = new Vue({
       el: t.formElement,
       methods: {
@@ -58,37 +57,37 @@ class Channel {
       })
     })
 
-    // input
-    Object.keys(t.inputFiles).map(function (key) {
-      t.inputFiles[key].addEventListener('change', function () {
-        console.log('in change', this)
-        if (this.files && this.files[0]) {
-          let inputPreviewContainer = document.querySelector('#' + t.name + ' form .message-c .images-c')
-          let img = document.createElement('img')
-          let div = document.createElement('div')
-          div.classList.add('image')
-          div.classList.add('bt-c')
-          let edit = document.createElement('p')
-          let editTxt = document.createTextNode('E')
-          edit.classList.add('bt')
-          edit.classList.add('bt-ico-fill')
-          edit.classList.add('bt-bot-right')
-          edit.appendChild(editTxt)
-
-          var reader = new FileReader()
-          reader.onload = function (e) {
-            img.setAttribute('src', e.target.result)
-            img.classList.add('preview')
-          }
-          reader.readAsDataURL(this.files[0])
-
-          div.append(img)
-          div.append(edit)
-
-          inputPreviewContainer.append(div)
-        }
-      })
-    })
+    // // input
+    // Object.keys(t.inputFiles).map(function (key) {
+    //   t.inputFiles[key].addEventListener('change', function () {
+    //     console.log('in change', this)
+    //     if (this.files && this.files[0]) {
+    //       let inputPreviewContainer = document.querySelector('#' + t.name + ' form .message-c .images-c')
+    //       let img = document.createElement('img')
+    //       let div = document.createElement('div')
+    //       div.classList.add('image')
+    //       div.classList.add('bt-c')
+    //       let edit = document.createElement('p')
+    //       let editTxt = document.createTextNode('E')
+    //       edit.classList.add('bt')
+    //       edit.classList.add('bt-ico-fill')
+    //       edit.classList.add('bt-bot-right')
+    //       edit.appendChild(editTxt)
+    //
+    //       var reader = new FileReader()
+    //       reader.onload = function (e) {
+    //         img.setAttribute('src', e.target.result)
+    //         img.classList.add('preview')
+    //       }
+    //       reader.readAsDataURL(this.files[0])
+    //
+    //       div.append(img)
+    //       div.append(edit)
+    //
+    //       inputPreviewContainer.append(div)
+    //     }
+    //   })
+    // })
   }
 
   sendMessage (e) {
@@ -98,7 +97,7 @@ class Channel {
     let input = document.getElementById(t.name + 'Input')
     let value = input.value
 
-    window.socket.emit('chat.message', {msg: value, room: t.name, pseudo: t.userPseudo, id: t.userId})
+    window.socket.emit('chat.message', {msg: value, room: t.name, id: t.userId})
     input.value = ''
 
     return false
@@ -110,7 +109,6 @@ class Channel {
     // affiche le message envoyé pour tous les users
     window.socket.on('chat.message', function (data) {
       if (data.room === t.name) {
-        // let li = document.createElement('li')
         let classMessage = null
         if (data.id === t.userId) {
           classMessage = 'sent'
@@ -125,19 +123,78 @@ class Channel {
           pseudo = data.pseudo + ' :'
         }
 
-        t.messageList.messages.push({ content: '<p class="pseudo">' + pseudo + '</p>' + data.msg, class: classMessage })
+        t.addMessage({pseudo: pseudo, messageContent: data.msg, messageId: data.idMessage, class: classMessage})
       }
     })
     // affiche le message de connexion
-    window.socket.on('user.connect', function (msg) {
-      let li = document.createElement('li')
-      li.classList.add('new')
-      let p = document.createElement('p')
-      let text = document.createTextNode(msg)
-      p.classList.add('connect')
-      p.appendChild(text)
-      li.appendChild(p)
-      t.messages.appendChild(li)
+    window.socket.on('user.connect', function (data) {
+      if (data.room === t.name && data.id !== t.userId) {
+        let classMessage = 'new'
+        let pseudo = data.pseudo
+
+        t.messageList.messages.push({ content: '<p>' + pseudo + ' est connecté</p>', class: classMessage })
+      }
     })
+  }
+
+  addMessage (data) {
+    const t = this
+
+    let content = '<p class="pseudo">' + data.pseudo + '</p>' + data.messageContent
+    let idChannel = t.getChannelName()
+    t.messageList.messages.push({ content: content, class: data.class, idMessage: data.idMessage, idChannel: idChannel })
+  }
+
+  loadMessage () {
+    const t = this
+
+    let lastMessage = document.querySelectorAll('#' + t.name + ' li')
+    console.log(lastMessage.length)
+    let channelId = t.getChannelName()
+
+    let dataToSend = {
+      nbMessagesLoad: 10,
+      idChannel: channelId
+    }
+
+    // if (lastMessage.length) dataToSend['idLastMessage'] = String(lastMessage[0].getAttribute('data-id-message'))
+    // let request = new XMLHttpRequest()
+    // request.open('POST', t.ajaxUrl + '?action=load_more', true)
+    // request.setRequestHeader('Content-type', 'application/json')
+    //
+    // request.send(JSON.stringify(dataToSend))
+    //
+    // request.onreadystatechange = function () {
+    //   if (request.readyState === 4) {
+    //     var json = JSON.parse(request.responseText)
+    //     console.log(json)
+    //   }
+    // }
+    $.ajax({
+      url: t.ajaxUrl + '?action=load_more',
+      type: 'POST',
+      data: dataToSend,
+      success: function (data) {
+        let response = JSON.parse(data)
+        if (response.status === 'ok') {
+          let messages = response.content
+          console.log(response.request)
+          for (var message of messages) {
+            // console.log(message)
+            let className = (message.user === t.userId) ? 'sent' : 'received'
+            // let content = '<p class="pseudo">' + data.pseudo + '</p>' + data.messageContent
+            t.messageList.messages.push({ content: message.content, class: className, idMessage: message.id, idChannel: channelId })
+          }
+        }
+      },
+      error: function (err) {
+        console.log(err)
+      }
+    })
+  }
+
+  getChannelName () {
+    const t = this
+    return Number(t.name.replace('channel', ''))
   }
 }

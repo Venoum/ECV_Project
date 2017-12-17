@@ -1,7 +1,7 @@
 #chat {
 
 
-  #channels {
+  nav {
     position: fixed;
     top: 0;
     left: 0;
@@ -9,17 +9,34 @@
     width: 100%;
     text-align: center;
 
-    li {
-      background-color: lightgrey;
-      padding: 10px;
-      margin: 10px;
-      cursor: pointer;
+    ul {
+
       display: inline-block;
 
-      &.selected {
-        background-color: pink
+      li {
+        padding: 10px;
+        margin: 10px;
+        cursor: pointer;
+        display: inline-block;
+
+        &.selected {
+          background-color: pink !important
+        }
       }
+
+      &#channels li {
+        background-color: lightgrey;
+        color: black
+      }
+
+      &#friends li {
+        background-color: black;
+        color: white
+      }
+
     }
+
+
   }
 
 
