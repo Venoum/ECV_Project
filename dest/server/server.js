@@ -28,6 +28,10 @@ var _mysql = require('mysql');
 
 var _mysql2 = _interopRequireDefault(_mysql);
 
+var _escapeStringRegexp = require('escape-string-regexp');
+
+var _escapeStringRegexp2 = _interopRequireDefault(_escapeStringRegexp);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var app = (0, _express2.default)();
@@ -76,18 +80,15 @@ io.on('connection', function (socket) {
 
     // push bdd
     var idChannel = Number(data.room.replace('channel', ''));
-    // faire la date comme il faut
     var date = new Date();
     var todayHour = date.getHours();
     var todayMinutes = date.getMinutes();
-    var sql = "INSERT INTO messages (msg_id_channel, msg_id_user, msg_content, msg_date) VALUES ('" + idChannel + "', '" + data.id + "', '" + msg + "', '" + (todayHour + ':' + todayMinutes) + "')";
+    var sql = 'INSERT INTO messages (msg_id_channel, msg_id_user, msg_content, msg_date) VALUES ("' + idChannel + '", "' + data.id + '", "' + msg + '", "' + (todayHour + ' : ' + todayMinutes) + '")';
     con.query(sql, function (err, result) {
-      console.log('requet sql');
       // TODO : envoyer message erreur côté client
       if (err) console.log(err);
       // si ok on envoie le message
       else {
-          console.log('pas derreur', room);
           io.to(room).emit('chat.message', { msg: msg, pseudo: socket.username, room: data.room, id: data.id, idMessage: result.insertId });
         }
     });

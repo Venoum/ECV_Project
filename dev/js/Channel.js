@@ -49,6 +49,13 @@ class Channel {
       }
     })
 
+    t.loadMessages = new Vue({
+      el: '#' + t.name + ' .more-messages',
+      methods: {
+        loadMessages: t.loadMessage.bind(t)
+      }
+    })
+
     // boutons du formulaire
     Object.keys(t.buttons).map(function (key) {
       t.buttons[key].addEventListener('click', function () {
@@ -57,6 +64,10 @@ class Channel {
       })
     })
 
+    //
+    // NE PAS EFFACER AJOUT PHOTO
+    // TODO : envoi photo + canvas
+    //
     // // input
     // Object.keys(t.inputFiles).map(function (key) {
     //   t.inputFiles[key].addEventListener('change', function () {
@@ -140,7 +151,7 @@ class Channel {
   addMessage (data) {
     const t = this
 
-    let content = '<p class="pseudo">' + data.pseudo + '</p>' + data.messageContent
+    let content = '<p class="pseudo">' + data.pseudo + ' : </p>' + data.messageContent
     let idChannel = t.getChannelName()
     t.messageList.messages.push({ content: content, class: data.class, idMessage: data.idMessage, idChannel: idChannel })
   }
@@ -148,8 +159,8 @@ class Channel {
   loadMessage () {
     const t = this
 
-    let lastMessage = document.querySelectorAll('#' + t.name + ' li')
-    console.log(lastMessage.length)
+    console.log('in load')
+
     let channelId = t.getChannelName()
 
     let dataToSend = {
@@ -157,34 +168,31 @@ class Channel {
       idChannel: channelId
     }
 
-    // if (lastMessage.length) dataToSend['idLastMessage'] = String(lastMessage[0].getAttribute('data-id-message'))
-    // let request = new XMLHttpRequest()
-    // request.open('POST', t.ajaxUrl + '?action=load_more', true)
-    // request.setRequestHeader('Content-type', 'application/json')
-    //
-    // request.send(JSON.stringify(dataToSend))
-    //
-    // request.onreadystatechange = function () {
-    //   if (request.readyState === 4) {
-    //     var json = JSON.parse(request.responseText)
-    //     console.log(json)
-    //   }
-    // }
+    let firstMessage = document.querySelectorAll('#' + t.name + ' li:first-child')
+    if (firstMessage.length) {
+      let firstMessageId = firstMessage[0].getAttribute('data-id-message')
+      dataToSend.idLastMessage = Number(firstMessageId)
+    }
+
     $.ajax({
       url: t.ajaxUrl + '?action=load_more',
       type: 'POST',
       data: dataToSend,
       success: function (data) {
         let response = JSON.parse(data)
+        console.log(response.status, t.name)
         if (response.status === 'ok') {
           let messages = response.content
-          console.log(response.request)
           for (var message of messages) {
-            // console.log(message)
-            let className = (message.user === t.userId) ? 'sent' : 'received'
-            // let content = '<p class="pseudo">' + data.pseudo + '</p>' + data.messageContent
-            t.messageList.messages.push({ content: message.content, class: className, idMessage: message.id, idChannel: channelId })
+            let className = (message.user === t.userPseudo) ? 'sent' : 'received'
+            let pseudo = (message.user === t.userPseudo) ? 'vous' : message.user
+            let content = '<p class="pseudo">' + pseudo + ' : </p>' + message.content
+            t.messageList.messages.unshift({ content: content, class: className, idMessage: message.id, idChannel: channelId })
           }
+        }
+        if ((response.status === 'ok' && !response.more) || response.status === 'vide') {
+          let buttonMessage = document.querySelectorAll('#' + t.name + ' .more-messages')
+          buttonMessage[0].style.display = 'none'
         }
       },
       error: function (err) {

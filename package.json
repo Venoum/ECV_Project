@@ -21,6 +21,7 @@
     "babel": "^6.23.0",
     "babel-core": "^6.26.0",
     "body-parser": "^1.18.2",
+    "escape-string-regexp": "^1.0.5",
     "express": "^4.16.2",
     "gulp": "^3.9.1",
     "remarkable": "^1.7.1",

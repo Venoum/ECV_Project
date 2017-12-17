@@ -5,6 +5,7 @@ import httpBase from 'http'
 import ioBase from 'socket.io'
 import remarkable from 'remarkable'
 import mysql from 'mysql'
+import escapeStringRegexp from 'escape-string-regexp'
 
 const app = express()
 const http = httpBase.Server(app)
@@ -53,11 +54,10 @@ io.on('connection', function (socket) {
 
     // push bdd
     let idChannel = Number(data.room.replace('channel', ''))
-    // faire la date comme il faut
     let date = new Date()
     let todayHour = date.getHours()
     let todayMinutes = date.getMinutes()
-    var sql = "INSERT INTO messages (msg_id_channel, msg_id_user, msg_content, msg_date) VALUES ('" + idChannel + "', '" + data.id + "', '" + msg + "', '" + (todayHour + ':' + todayMinutes) + "')"
+    var sql = 'INSERT INTO messages (msg_id_channel, msg_id_user, msg_content, msg_date) VALUES ("' + idChannel + '", "' + data.id + '", "' + msg + '", "' + (todayHour + ' : ' + todayMinutes) + '")'
     con.query(sql, function (err, result) {
       // TODO : envoyer message erreur côté client
       if (err) console.log(err)

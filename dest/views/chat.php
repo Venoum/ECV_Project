@@ -56,13 +56,19 @@
 
       <h6 class="channel-name"><?= $channel->name ?></h6>
 
-      <ul class="messages" id="<?= $channel->slug ?>Message">
-        <message-item
-            v-for="message in messages"
-            v-bind:message="message"
-            v-bind:key="message.id"
-          ></message-item>
-      </ul>
+      <div class="bt more-messages" v-on:click="loadMessages">
+        <p>+ de messages</p>
+      </div>
+
+      <div class="container-messages">
+        <ul class="messages" id="<?= $channel->slug ?>Message">
+          <message-item
+              v-for="message in messages"
+              v-bind:message="message"
+              v-bind:key="message.id"
+            ></message-item>
+        </ul>
+      </div>
 
       <form v-on:submit="sendMessage">
 

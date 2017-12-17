@@ -60,6 +60,13 @@ var Channel = function () {
         }
       });
 
+      t.loadMessages = new Vue({
+        el: '#' + t.name + ' .more-messages',
+        methods: {
+          loadMessages: t.loadMessage.bind(t)
+        }
+      });
+
       // boutons du formulaire
       Object.keys(t.buttons).map(function (key) {
         t.buttons[key].addEventListener('click', function () {
@@ -68,6 +75,10 @@ var Channel = function () {
         });
       });
 
+      //
+      // NE PAS EFFACER AJOUT PHOTO
+      // TODO : envoi photo + canvas
+      //
       // // input
       // Object.keys(t.inputFiles).map(function (key) {
       //   t.inputFiles[key].addEventListener('change', function () {
@@ -154,7 +165,7 @@ var Channel = function () {
     value: function addMessage(data) {
       var t = this;
 
-      var content = '<p class="pseudo">' + data.pseudo + '</p>' + data.messageContent;
+      var content = '<p class="pseudo">' + data.pseudo + ' : </p>' + data.messageContent;
       var idChannel = t.getChannelName();
       t.messageList.messages.push({ content: content, class: data.class, idMessage: data.idMessage, idChannel: idChannel });
     }
@@ -163,36 +174,30 @@ var Channel = function () {
     value: function loadMessage() {
       var t = this;
 
-      var lastMessage = document.querySelectorAll('#' + t.name + ' li');
-      console.log(lastMessage.length);
+      console.log('in load');
+
       var channelId = t.getChannelName();
 
       var dataToSend = {
         nbMessagesLoad: 10,
         idChannel: channelId
+      };
 
-        // if (lastMessage.length) dataToSend['idLastMessage'] = String(lastMessage[0].getAttribute('data-id-message'))
-        // let request = new XMLHttpRequest()
-        // request.open('POST', t.ajaxUrl + '?action=load_more', true)
-        // request.setRequestHeader('Content-type', 'application/json')
-        //
-        // request.send(JSON.stringify(dataToSend))
-        //
-        // request.onreadystatechange = function () {
-        //   if (request.readyState === 4) {
-        //     var json = JSON.parse(request.responseText)
-        //     console.log(json)
-        //   }
-        // }
-      };$.ajax({
+      var firstMessage = document.querySelectorAll('#' + t.name + ' li:first-child');
+      if (firstMessage.length) {
+        var firstMessageId = firstMessage[0].getAttribute('data-id-message');
+        dataToSend.idLastMessage = Number(firstMessageId);
+      }
+
+      $.ajax({
         url: t.ajaxUrl + '?action=load_more',
         type: 'POST',
         data: dataToSend,
         success: function success(data) {
           var response = JSON.parse(data);
+          console.log(response.status, t.name);
           if (response.status === 'ok') {
             var messages = response.content;
-            console.log(response.request);
             var _iteratorNormalCompletion = true;
             var _didIteratorError = false;
             var _iteratorError = undefined;
@@ -201,10 +206,10 @@ var Channel = function () {
               for (var _iterator = messages[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
                 var message = _step.value;
 
-                // console.log(message)
-                var className = message.user === t.userId ? 'sent' : 'received';
-                // let content = '<p class="pseudo">' + data.pseudo + '</p>' + data.messageContent
-                t.messageList.messages.push({ content: message.content, class: className, idMessage: message.id, idChannel: channelId });
+                var className = message.user === t.userPseudo ? 'sent' : 'received';
+                var pseudo = message.user === t.userPseudo ? 'vous' : message.user;
+                var content = '<p class="pseudo">' + pseudo + ' : </p>' + message.content;
+                t.messageList.messages.unshift({ content: content, class: className, idMessage: message.id, idChannel: channelId });
               }
             } catch (err) {
               _didIteratorError = true;
@@ -220,6 +225,10 @@ var Channel = function () {
                 }
               }
             }
+          }
+          if (response.status === 'ok' && !response.more || response.status === 'vide') {
+            var buttonMessage = document.querySelectorAll('#' + t.name + ' .more-messages');
+            buttonMessage[0].style.display = 'none';
           }
         },
         error: function error(err) {
