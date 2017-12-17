@@ -37,6 +37,13 @@ io.on('connection', function (socket) {
   socket.on('user.connect', function (pseudo) {
     socket.username = pseudo
     console.log('user', socket.username)
+
+    // ajout identifiant mysql
+    let sql = 'UPDATE users SET us_socket_id = "' + socket.id + '" WHERE us_pseudo = "' + socket.username + '"'
+    con.query(sql, function (err, result) {
+      // TODO : envoyer message erreur côté client
+      if (err) console.log(err)
+    })
   })
 
   // message de connection
@@ -57,7 +64,7 @@ io.on('connection', function (socket) {
     let date = new Date()
     let todayHour = date.getHours()
     let todayMinutes = date.getMinutes()
-    var sql = 'INSERT INTO messages (msg_id_channel, msg_id_user, msg_content, msg_date) VALUES ("' + idChannel + '", "' + data.id + '", "' + msg + '", "' + (todayHour + ' : ' + todayMinutes) + '")'
+    let sql = 'INSERT INTO messages (msg_id_channel, msg_id_user, msg_content, msg_date) VALUES ("' + idChannel + '", "' + data.id + '", "' + msg + '", "' + (todayHour + ' : ' + todayMinutes) + '")'
     con.query(sql, function (err, result) {
       // TODO : envoyer message erreur côté client
       if (err) console.log(err)

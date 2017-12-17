@@ -24,28 +24,49 @@
 
   ?>
 
-  <?php
-  // TODO : affichage / acceptation des notifications
-  ?>
-  <p><?= $nbr_notifs ?></p>
 
-  <div class="burger-c">
-    <svg>
-      <rect width="100%" height="2px" fill="black"></rect>
-      <rect width="100%" height="2px" fill="black"></rect>
-      <rect width="100%" height="2px" fill="black"></rect>
-    </svg>
-  </div>
+  <header>
+
+    <div class="burger-c bt">
+      <svg>
+        <rect width="50px" height="4px" fill="white" x="0" y="10"></rect>
+        <rect width="50px" height="4px" fill="white" x="0" y="23px"></rect>
+        <rect width="50px" height="4px" fill="white" x="0" y="36px"></rect>
+      </svg>
+    </div>
+
+    <div class="logo">
+      logo
+    </div>
+
+    <div class="bt bt-notification">
+      <div class="icon"></div>
+      <div class="number">
+        <p><?= $nbr_notifs ?></p>
+      </div>
+    </div>
+
+  </header>
 
 
+
+
+  <!-- MENU CHANNELS -->
+  <!-- TODO : spliter amis et salons public voir php trier tableau -->
   <nav>
-    <!-- MENU CHANNELS -->
     <ul id="channels">
       <?php foreach ($channels as $channel) : ?>
         <li class="channel <?= $channel->type ?>" data-name="<?= $channel->slug ?>"><?= $channel->name ?></li>
       <?php endforeach; ?>
     </ul>
   </nav>
+
+  <!-- NOTIFICATIONS -->
+  <div class="notifications-c">
+    <ul id="notifications">
+
+    </ul>
+  </div>
 
 
 

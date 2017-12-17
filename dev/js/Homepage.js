@@ -6,6 +6,8 @@ class Homepage {
     t.channels = document.getElementsByClassName('channel')
     t.userPseudo = window.localStorage.getItem('pseudo_user')
     window.socket = io.connect('http://localhost:8080')
+    t.burger = document.querySelectorAll('.burger-c')[0]
+    t.nav = document.querySelectorAll('nav')[0]
 
     t.init()
   }
@@ -19,6 +21,12 @@ class Homepage {
 
     // initialisation des channels
     t.startChannels()
+
+    // watcher menu
+    t.burger.addEventListener('click', function () {
+      if (t.nav.classList.contains('active')) t.nav.classList.remove('active')
+      else t.nav.classList.add('active')
+    })
 
     // watcher click de mes channels
     Object.keys(t.channels).map(function (key) {
@@ -65,6 +73,8 @@ class Homepage {
     channelCurrent.classList.add('selected')
     let windowCurrent = document.getElementById(t.name)
     windowCurrent.classList.add('selected')
+
+    t.nav.classList.remove('active')
   }
 
   userConnected () {

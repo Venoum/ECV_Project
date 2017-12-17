@@ -63,6 +63,13 @@ io.on('connection', function (socket) {
   socket.on('user.connect', function (pseudo) {
     socket.username = pseudo;
     console.log('user', socket.username);
+
+    // ajout identifiant mysql
+    var sql = 'UPDATE users SET (`us_socket_id` = "' + socket.id + '") WHERE us_pseudo = ' + socket.username;
+    con.query(sql, function (err, result) {
+      // TODO : envoyer message erreur côté client
+      if (err) console.log(err);
+    });
   });
 
   // message de connection
