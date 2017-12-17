@@ -25,7 +25,7 @@
 
   }
 
-  .notifications {
+  .bt-notification {
     position: absolute;
     right: 20px;
     left: auto;
@@ -34,16 +34,11 @@
     height: 25px;
     .number {
       background-color: white;
-      color: black;
-      width: 100%;
-      height: 100%;
-      text-align: center;
-      line-height: 25px;
-      border-radius: 100%;
     }
   }
 
-  nav {
+
+  .channels-c, .notifications-c {
     position: fixed;
     top: 50px;
     width: 100vw;
@@ -51,11 +46,16 @@
     background-color: black;
     display: none;
     padding: 0 20px;
+    width: 100%;
+    text-align: center;
 
     &.active {
       display: block;
     }
 
+  }
+
+  .channels-c {
     ul {
       text-align: center;
       li {
@@ -70,6 +70,30 @@
           background-color: pink !important;
           color: black;
         }
+      }
+    }
+  }
+
+  .notifications-c {
+    padding: 20px;
+
+    li {
+      width: 80%;
+      text-align: center;
+      background-color: white;
+      color: black;
+      display: inline-block;
+      padding: 10px 0;
+
+      p {
+        margin-bottom: 10px;
+      }
+
+      .bt-remove, .bt-add {
+        background-color: black;
+        color: white;
+        margin-left: 20px;
+        padding: 5px;
       }
     }
   }

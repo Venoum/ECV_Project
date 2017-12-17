@@ -19,6 +19,7 @@
   <script type='text/javascript'>
     localStorage.setItem('id_user', '$id_user');
     localStorage.setItem('pseudo_user', '$pseudo_user');
+    var notificationsArray = " . json_encode($notifs) . ";
   </script>
   ";
 
@@ -41,19 +42,16 @@
 
     <div class="bt bt-notification">
       <div class="icon"></div>
-      <div class="number">
+      <div class="number bt-round">
         <p><?= $nbr_notifs ?></p>
       </div>
     </div>
-
   </header>
-
-
 
 
   <!-- MENU CHANNELS -->
   <!-- TODO : spliter amis et salons public voir php trier tableau -->
-  <nav>
+  <nav class="channels-c">
     <ul id="channels">
       <?php foreach ($channels as $channel) : ?>
         <li class="channel <?= $channel->type ?>" data-name="<?= $channel->slug ?>"><?= $channel->name ?></li>
@@ -61,13 +59,27 @@
     </ul>
   </nav>
 
+
   <!-- NOTIFICATIONS -->
   <div class="notifications-c">
     <ul id="notifications">
+      <notif-item
+          v-for="notif in notifs"
+          v-bind:message="notif"
+          v-bind:key="notif.id"
+        ></notif-item>
+
 
     </ul>
   </div>
 
+  <?php foreach ($notifs as $notif) :?>
+    <!-- <li id="<?php echo $notif['id'] ?>">
+      <p><?php echo $notif['pseudo'] ?> veut être votre ami</p>
+      <span class="bt bt-add bt-round" data-action="accepted" data-user-pseudo="<?php echo $notif['id_user'] ?>">Y</span>
+      <span class="bt bt-remove bt-round" data-action="refused" data-user-pseudo="<?php echo $notif['id_user'] ?>">N</span>
+    </li> -->
+  <?php endforeach; ?>
 
 
   <!-- CHAT SALONS -->
@@ -117,7 +129,6 @@
         </div>
 
       </form>
-
     </section>
 
   <?php endforeach; ?>
@@ -125,11 +136,11 @@
   <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js" integrity="sha384-aBL3Lzi6c9LNDGvpHkZrrm3ZVsIwohDD7CDozL0pk8FwCrfmV7H9w8j3L7ikEv6h" crossorigin="anonymous"></script>
 	<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js" integrity="sha384-Dziy8F2VlJQLMShA6FHWNul/veM9bCkRUaLqr199K94ntO5QUrLJBEbYegdSkkqX" crossorigin="anonymous"></script> -->
 
-
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
   <script src="http://192.168.1.50:8080/socket.io/socket.io.js"></script>
   <script src="http://192.168.1.50:8888/ECVDigital/Workshop/dest/lib/jquery.ajax.min.js"></script>
   <script src="http://192.168.1.50:8888/ECVDigital/Workshop/dest/assets/js/all.js"></script>
+
 
 </body>
 </html>

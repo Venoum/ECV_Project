@@ -75,6 +75,19 @@ io.on('connection', function (socket) {
     })
   })
 
+  // reponse à une notification
+  socket.on('notification.response', function (data) {
+    let sql = 'UPDATE friends SET fr_status = "' + data.action + '" WHERE fr_id_user_send = "' + data.idUserSend + '" AND fr_id_user_receiver = "' + data.idUserReceiver + '"'
+    con.query(sql, function (err, result) {
+      // TODO : envoyer message erreur côté client
+      if (err) console.log(err)
+      // si ok on envoie le message
+      else {
+        io.to(socket.id).emit('notification.response', data.id)
+      }
+    })
+  })
+
   // quand se deconnecte
   socket.on('disconnect', function () {
     console.log('user non connecté - A FAIRE !!')

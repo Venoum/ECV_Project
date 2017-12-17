@@ -41,44 +41,58 @@ ul {
 #chat .logo {
   display: inline-block; }
 
-#chat .notifications {
+#chat .bt-notification {
   position: absolute;
   right: 20px;
   left: auto;
   top: 12.5px;
   width: 25px;
   height: 25px; }
-  #chat .notifications .number {
-    background-color: white;
-    color: black;
-    width: 100%;
-    height: 100%;
-    text-align: center;
-    line-height: 25px;
-    border-radius: 100%; }
+  #chat .bt-notification .number {
+    background-color: white; }
 
-#chat nav {
+#chat .channels-c, #chat .notifications-c {
   position: fixed;
   top: 50px;
   width: 100vw;
   z-index: 99999;
   background-color: black;
   display: none;
-  padding: 0 20px; }
-  #chat nav.active {
+  padding: 0 20px;
+  width: 100%;
+  text-align: center; }
+  #chat .channels-c.active, #chat .notifications-c.active {
     display: block; }
-  #chat nav ul {
-    text-align: center; }
-    #chat nav ul li {
-      padding: 10px;
-      margin: 10px;
-      cursor: pointer;
-      display: inline-block;
-      background-color: white;
+
+#chat .channels-c ul {
+  text-align: center; }
+  #chat .channels-c ul li {
+    padding: 10px;
+    margin: 10px;
+    cursor: pointer;
+    display: inline-block;
+    background-color: white;
+    color: black; }
+    #chat .channels-c ul li.selected {
+      background-color: pink !important;
       color: black; }
-      #chat nav ul li.selected {
-        background-color: pink !important;
-        color: black; }
+
+#chat .notifications-c {
+  padding: 20px; }
+  #chat .notifications-c li {
+    width: 80%;
+    text-align: center;
+    background-color: white;
+    color: black;
+    display: inline-block;
+    padding: 10px 0; }
+    #chat .notifications-c li p {
+      margin-bottom: 10px; }
+    #chat .notifications-c li .bt-remove, #chat .notifications-c li .bt-add {
+      background-color: black;
+      color: white;
+      margin-left: 20px;
+      padding: 5px; }
 
 #chat .window-chat {
   position: fixed;
@@ -159,3 +173,13 @@ ul {
   color: white;
   width: 10px;
   height: 10px; }
+
+.bt-round {
+  color: black;
+  width: 100%;
+  height: 100%;
+  min-width: 25px;
+  min-height: 25px;
+  text-align: center;
+  line-height: 25px;
+  border-radius: 100%; }

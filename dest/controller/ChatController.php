@@ -66,13 +66,13 @@ if ($action === 'chat')
 
 
   // récupère les notifications
-  $request_notifs = "SELECT us_pseudo
+  $request_notifs = "SELECT us_pseudo, us_id, fr_id
   FROM users
   INNER JOIN friends ON fr_id_user_receiver = $id_user AND fr_status= 'pending' AND fr_id_user_send = us_id";
   $result_notifs = myFetchAllAssoc($request_notifs);
 
   foreach ($result_notifs as $notif) {
-    $notifs[] = $notif['us_pseudo'];
+    $notifs[] = array('id_user' => $notif['us_id'], 'pseudo' => $notif['us_pseudo'], 'id' => $notif['fr_id']);
   }
   $nbr_notifs = count($notifs);
 

@@ -65,7 +65,7 @@ io.on('connection', function (socket) {
     console.log('user', socket.username);
 
     // ajout identifiant mysql
-    var sql = 'UPDATE users SET (`us_socket_id` = "' + socket.id + '") WHERE us_pseudo = ' + socket.username;
+    var sql = 'UPDATE users SET us_socket_id = "' + socket.id + '" WHERE us_pseudo = "' + socket.username + '"';
     con.query(sql, function (err, result) {
       // TODO : envoyer message erreur côté client
       if (err) console.log(err);
@@ -97,6 +97,22 @@ io.on('connection', function (socket) {
       // si ok on envoie le message
       else {
           io.to(room).emit('chat.message', { msg: msg, pseudo: socket.username, room: data.room, id: data.id, idMessage: result.insertId });
+        }
+    });
+  });
+
+  // reponse à une notification
+  socket.on('notification.response', function (data) {
+    var sql = 'UPDATE friends SET fr_status = "' + data.action + '" WHERE fr_id_user_send = "' + data.idUserSend + '" AND fr_id_user_receiver = "' + data.idUserReceiver + '"';
+    con.query(sql, function (err, result) {
+      // TODO : envoyer message erreur côté client
+      if (err) console.log(err);
+      // si ok on envoie le message
+      else {
+          console.log('ok', socket.id);
+          io.to(socket.id).emit('notification.response', data.id);
+          // effacer la notification en front ??
+          // io.to(room).emit('chat.message', {msg: msg, pseudo: socket.username, room: data.room, id: data.id, idMessage: result.insertId})
         }
     });
   });

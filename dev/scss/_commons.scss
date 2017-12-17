@@ -28,3 +28,14 @@
   width: 10px;
   height: 10px;
 }
+
+.bt-round {
+  color: black;
+  width: 100%;
+  height: 100%;
+  min-width: 25px;
+  min-height: 25px;
+  text-align: center;
+  line-height: 25px;
+  border-radius: 100%;
+}

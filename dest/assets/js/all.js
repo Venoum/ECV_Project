@@ -260,11 +260,24 @@ var Homepage = function () {
     var t = this;
 
     t.channels = document.getElementsByClassName('channel');
+    t.userId = window.localStorage.getItem('id_user');
     t.userPseudo = window.localStorage.getItem('pseudo_user');
     window.socket = io.connect('http://localhost:8080');
     t.burger = document.querySelectorAll('.burger-c')[0];
-    t.nav = document.querySelectorAll('nav')[0];
+    t.channelList = document.querySelectorAll('.channels-c')[0];
+    t.btNotifs = document.querySelectorAll('.bt-notification')[0];
+    t.btNotifsActions = document.querySelectorAll('#notifications .bt');
+    t.notifContainer = document.querySelectorAll('.notifications-c')[0];
 
+    t.notificationsArray = notificationsArray;
+
+    t.notifsList = new Vue({
+      el: '#notifications',
+      data: {
+        notifs: []
+      }
+    });
+    console.log(t.notificationsArray);
     t.init();
   }
 
@@ -280,10 +293,21 @@ var Homepage = function () {
       // initialisation des channels
       t.startChannels();
 
-      // watcher menu
-      t.burger.addEventListener('click', function () {
-        if (t.nav.classList.contains('active')) t.nav.classList.remove('active');else t.nav.classList.add('active');
-      });
+      // watcher ouverture containers
+      t.watchersStyle();
+
+      // lance la partie server
+      t.fromServerSide();
+
+      // set notifs
+      t.setNotifs();
+      // afficher le profil
+      // se déconnecter
+    }
+  }, {
+    key: 'watchersStyle',
+    value: function watchersStyle() {
+      var t = this;
 
       // watcher click de mes channels
       Object.keys(t.channels).map(function (key) {
@@ -298,9 +322,27 @@ var Homepage = function () {
         });
       });
 
-      // afficher le profil
+      // watcher channel menu
+      t.burger.addEventListener('click', function () {
+        if (t.channelList.classList.contains('active')) t.channelList.classList.remove('active');else t.channelList.classList.add('active');
+        if (t.notifContainer.classList.contains('active')) t.notifContainer.classList.remove('active');
+      });
 
-      // se déconnecter
+      // watcher notifs menu
+      t.btNotifs.addEventListener('click', function () {
+        if (t.notifContainer.classList.contains('active')) t.notifContainer.classList.remove('active');else t.notifContainer.classList.add('active');
+        if (t.channelList.classList.contains('active')) t.channelList.classList.remove('active');
+      });
+
+      // watcher button notifs
+      Object.keys(t.btNotifsActions).map(function (key) {
+        t.btNotifsActions[key].addEventListener('click', function () {
+          var userPseudoRequest = this.getAttribute('data-user-pseudo');
+          var action = this.getAttribute('data-action');
+          var parentId = this.parentNode.getAttribute('id');
+          window.socket.emit('notification.response', { action: action, idUserReceiver: t.userId, idUserSend: userPseudoRequest, id: parentId });
+        });
+      });
     }
   }, {
     key: 'startChannels',
@@ -333,7 +375,7 @@ var Homepage = function () {
       var windowCurrent = document.getElementById(t.name);
       windowCurrent.classList.add('selected');
 
-      t.nav.classList.remove('active');
+      t.channelList.classList.remove('active');
     }
   }, {
     key: 'userConnected',
@@ -341,6 +383,27 @@ var Homepage = function () {
       var t = this;
 
       window.socket.emit('user.connect', t.userPseudo);
+    }
+  }, {
+    key: 'fromServerSide',
+    value: function fromServerSide() {
+      var t = this;
+
+      window.socket.on('notification.response', function (id) {
+        console.log('reponse reçue', id);
+      });
+    }
+  }, {
+    key: 'setNotifs',
+    value: function setNotifs() {
+      var t = this;
+
+      console.log('in set notif', t.notificationsArray.length);
+
+      for (var i = 0; i < t.notificationsArray.length; i++) {
+        console.log(i);
+        t.notifsList.notif.push({ id: t.notificationsArray[i].id, pseudo: t.notificationsArray[i].pseudo, userId: t.notificationsArray[i].id_user });
+      }
     }
   }]);
 
@@ -385,4 +448,9 @@ website.init();
 Vue.component('message-item', {
   props: ['message'],
   template: '<li v-bind:data-id-message="message.idMessage" v-bind:data-id-channel="message.idChannel" v-bind:class="message.class" v-html="message.content"></li>'
+});
+
+Vue.component('notif-item', {
+  props: ['notif'],
+  template: '<li v-bind:id="notif.id"><p>{{notif.pseudo}} veut parler avec vous</p><span class="bt bt-add bt-round" data-action="accepted" v-bind:data-id-user="notif.userId">Y</span><span class="bt bt-add bt-round" data-action="refused" v-bind:data-id-user="notif.userId">N</span></li>'
 });
