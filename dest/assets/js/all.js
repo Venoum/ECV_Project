@@ -266,10 +266,9 @@ var Homepage = function () {
     t.burger = document.querySelectorAll('.burger-c')[0];
     t.channelList = document.querySelectorAll('.channels-c')[0];
     t.btNotifs = document.querySelectorAll('.bt-notification')[0];
-    t.btNotifsActions = document.querySelectorAll('#notifications .bt');
     t.notifContainer = document.querySelectorAll('.notifications-c')[0];
-
     t.notificationsArray = notificationsArray;
+    t.number = document.querySelectorAll('.bt-notification .number p')[0];
 
     t.notifsList = new Vue({
       el: '#notifications',
@@ -277,7 +276,7 @@ var Homepage = function () {
         notifs: []
       }
     });
-    console.log(t.notificationsArray);
+
     t.init();
   }
 
@@ -304,6 +303,24 @@ var Homepage = function () {
       // afficher le profil
       // se déconnecter
     }
+
+    // watcherButtonsNotif () {
+    //   const t = this
+    //
+    //   console.log('in watch')
+    //   let buttons = document.querySelectorAll('#notifications .bt')
+    //   console.log(buttons)
+    //   // watcher button notifs
+    //   Object.keys(buttons).map(function (key) {
+    //     buttons[key].addEventListener('click', function () {
+    //       let userPseudoRequest = this.getAttribute('data-user-pseudo')
+    //       let action = this.getAttribute('data-action')
+    //       let parentId = this.parentNode.getAttribute('id')
+    //       window.socket.emit('notification.response', {action: action, idUserReceiver: t.userId, idUserSend: userPseudoRequest, id: parentId})
+    //     })
+    //   })
+    // }
+
   }, {
     key: 'watchersStyle',
     value: function watchersStyle() {
@@ -332,16 +349,6 @@ var Homepage = function () {
       t.btNotifs.addEventListener('click', function () {
         if (t.notifContainer.classList.contains('active')) t.notifContainer.classList.remove('active');else t.notifContainer.classList.add('active');
         if (t.channelList.classList.contains('active')) t.channelList.classList.remove('active');
-      });
-
-      // watcher button notifs
-      Object.keys(t.btNotifsActions).map(function (key) {
-        t.btNotifsActions[key].addEventListener('click', function () {
-          var userPseudoRequest = this.getAttribute('data-user-pseudo');
-          var action = this.getAttribute('data-action');
-          var parentId = this.parentNode.getAttribute('id');
-          window.socket.emit('notification.response', { action: action, idUserReceiver: t.userId, idUserSend: userPseudoRequest, id: parentId });
-        });
       });
     }
   }, {
@@ -391,6 +398,14 @@ var Homepage = function () {
 
       window.socket.on('notification.response', function (id) {
         console.log('reponse reçue', id);
+        var index = t.notifsList.notifs.map(function (e) {
+          return e.id;
+        }).indexOf('3');
+        t.notifsList.notifs.splice(index, 1);
+
+        // reset le nombre de notifs
+        t.setNumberNotif();
+        //
       });
     }
   }, {
@@ -398,12 +413,33 @@ var Homepage = function () {
     value: function setNotifs() {
       var t = this;
 
-      console.log('in set notif', t.notificationsArray.length);
-
       for (var i = 0; i < t.notificationsArray.length; i++) {
-        console.log(i);
-        t.notifsList.notif.push({ id: t.notificationsArray[i].id, pseudo: t.notificationsArray[i].pseudo, userId: t.notificationsArray[i].id_user });
+        t.notifsList.notifs.push({ id: t.notificationsArray[i].id, pseudo: t.notificationsArray[i].pseudo, userId: t.notificationsArray[i].id_user });
       }
+
+      // t.buttonsActionNotif = new Vue({
+      //   el: '.bt-action',
+      //   methods: {
+      //     action: function () {
+      //       console.log('in action')
+      //       let userPseudoRequest = this.getAttribute('data-user-pseudo')
+      //       let action = this.getAttribute('data-action')
+      //       let parentId = this.parentNode.getAttribute('id')
+      //       // window.socket.emit('notification.response', {action: action, idUserReceiver: t.userId, idUserSend: userPseudoRequest, id: parentId})
+      //     }
+      //   }
+      // })
+
+      // t.watcherButtonsNotif()
+      t.setNumberNotif();
+    }
+  }, {
+    key: 'setNumberNotif',
+    value: function setNumberNotif() {
+      var t = this;
+
+      var number = t.notifsList.notifs.length;
+      t.number.innerHTML = number;
     }
   }]);
 
@@ -452,5 +488,14 @@ Vue.component('message-item', {
 
 Vue.component('notif-item', {
   props: ['notif'],
-  template: '<li v-bind:id="notif.id"><p>{{notif.pseudo}} veut parler avec vous</p><span class="bt bt-add bt-round" data-action="accepted" v-bind:data-id-user="notif.userId">Y</span><span class="bt bt-add bt-round" data-action="refused" v-bind:data-id-user="notif.userId">N</span></li>'
+  template: '<li v-bind:id="notif.id"><p>{{notif.pseudo}} veut parler avec vous</p><span v-on:click="action" class="bt bt-action bt-round" data-action="accepted" v-bind:data-id-user="notif.userId">Y</span><span v-on:click="action" class="bt bt-action bt-round" data-action="refused" v-bind:data-id-user="notif.userId">N</span></li>',
+  methods: {
+    action: function action(event) {
+      var userPseudoRequest = event.currentTarget.getAttribute('data-id-user');
+      var action = event.currentTarget.getAttribute('data-action');
+      var parentId = event.currentTarget.parentNode.getAttribute('id');
+      console.log('in action', userPseudoRequest, action, parentId);
+      window.socket.emit('notification.response', { action: action, idUserReceiver: window.localStorage.getItem('id_user'), idUserSend: userPseudoRequest, id: parentId });
+    }
+  }
 });

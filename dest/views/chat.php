@@ -43,7 +43,7 @@
     <div class="bt bt-notification">
       <div class="icon"></div>
       <div class="number bt-round">
-        <p><?= $nbr_notifs ?></p>
+        <p></p>
       </div>
     </div>
   </header>
@@ -65,11 +65,9 @@
     <ul id="notifications">
       <notif-item
           v-for="notif in notifs"
-          v-bind:message="notif"
+          v-bind:notif="notif"
           v-bind:key="notif.id"
         ></notif-item>
-
-
     </ul>
   </div>
 

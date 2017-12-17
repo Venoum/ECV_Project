@@ -88,7 +88,7 @@ ul {
     padding: 10px 0; }
     #chat .notifications-c li p {
       margin-bottom: 10px; }
-    #chat .notifications-c li .bt-remove, #chat .notifications-c li .bt-add {
+    #chat .notifications-c li .bt-action {
       background-color: black;
       color: white;
       margin-left: 20px;

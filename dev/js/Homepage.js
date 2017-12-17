@@ -10,10 +10,9 @@ class Homepage {
     t.burger = document.querySelectorAll('.burger-c')[0]
     t.channelList = document.querySelectorAll('.channels-c')[0]
     t.btNotifs = document.querySelectorAll('.bt-notification')[0]
-    t.btNotifsActions = document.querySelectorAll('#notifications .bt')
     t.notifContainer = document.querySelectorAll('.notifications-c')[0]
-
     t.notificationsArray = notificationsArray
+    t.number = document.querySelectorAll('.bt-notification .number p')[0]
 
     t.notifsList = new Vue({
       el: '#notifications',
@@ -21,7 +20,7 @@ class Homepage {
         notifs: []
       }
     })
-    console.log(t.notificationsArray)
+
     t.init()
   }
 
@@ -46,6 +45,23 @@ class Homepage {
     // afficher le profil
     // se déconnecter
   }
+
+  // watcherButtonsNotif () {
+  //   const t = this
+  //
+  //   console.log('in watch')
+  //   let buttons = document.querySelectorAll('#notifications .bt')
+  //   console.log(buttons)
+  //   // watcher button notifs
+  //   Object.keys(buttons).map(function (key) {
+  //     buttons[key].addEventListener('click', function () {
+  //       let userPseudoRequest = this.getAttribute('data-user-pseudo')
+  //       let action = this.getAttribute('data-action')
+  //       let parentId = this.parentNode.getAttribute('id')
+  //       window.socket.emit('notification.response', {action: action, idUserReceiver: t.userId, idUserSend: userPseudoRequest, id: parentId})
+  //     })
+  //   })
+  // }
 
   watchersStyle () {
     const t = this
@@ -76,18 +92,6 @@ class Homepage {
       else t.notifContainer.classList.add('active')
       if (t.channelList.classList.contains('active')) t.channelList.classList.remove('active')
     })
-
-    // watcher button notifs
-    Object.keys(t.btNotifsActions).map(function (key) {
-      t.btNotifsActions[key].addEventListener('click', function () {
-        let userPseudoRequest = this.getAttribute('data-user-pseudo')
-        let action = this.getAttribute('data-action')
-        let parentId = this.parentNode.getAttribute('id')
-        window.socket.emit('notification.response', {action: action, idUserReceiver: t.userId, idUserSend: userPseudoRequest, id: parentId})
-      })
-    })
-
-
   }
 
   startChannels () {
@@ -132,17 +136,43 @@ class Homepage {
 
     window.socket.on('notification.response', function (id) {
       console.log('reponse reçue', id)
+      let index = t.notifsList.notifs.map(function (e) { return e.id }).indexOf('3')
+      t.notifsList.notifs.splice(index, 1)
+
+      // reset le nombre de notifs
+      t.setNumberNotif()
+      //
     })
   }
 
   setNotifs () {
     const t = this
 
-    console.log('in set notif', t.notificationsArray.length)
-
     for (let i = 0; i < t.notificationsArray.length; i++) {
-      console.log(i)
-      t.notifsList.notif.push({id: t.notificationsArray[i].id, pseudo: t.notificationsArray[i].pseudo, userId: t.notificationsArray[i].id_user})
+      t.notifsList.notifs.push({id: t.notificationsArray[i].id, pseudo: t.notificationsArray[i].pseudo, userId: t.notificationsArray[i].id_user})
     }
+
+    // t.buttonsActionNotif = new Vue({
+    //   el: '.bt-action',
+    //   methods: {
+    //     action: function () {
+    //       console.log('in action')
+    //       let userPseudoRequest = this.getAttribute('data-user-pseudo')
+    //       let action = this.getAttribute('data-action')
+    //       let parentId = this.parentNode.getAttribute('id')
+    //       // window.socket.emit('notification.response', {action: action, idUserReceiver: t.userId, idUserSend: userPseudoRequest, id: parentId})
+    //     }
+    //   }
+    // })
+
+    // t.watcherButtonsNotif()
+    t.setNumberNotif()
+  }
+
+  setNumberNotif () {
+    const t = this
+
+    let number = t.notifsList.notifs.length
+    t.number.innerHTML = number
   }
 }

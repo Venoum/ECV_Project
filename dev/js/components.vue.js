@@ -5,5 +5,14 @@ Vue.component('message-item', {
 
 Vue.component('notif-item', {
   props: ['notif'],
-  template: '<li v-bind:id="notif.id"><p>{{notif.pseudo}} veut parler avec vous</p><span class="bt bt-add bt-round" data-action="accepted" v-bind:data-id-user="notif.userId">Y</span><span class="bt bt-add bt-round" data-action="refused" v-bind:data-id-user="notif.userId">N</span></li>'
+  template: '<li v-bind:id="notif.id"><p>{{notif.pseudo}} veut parler avec vous</p><span v-on:click="action" class="bt bt-action bt-round" data-action="accepted" v-bind:data-id-user="notif.userId">Y</span><span v-on:click="action" class="bt bt-action bt-round" data-action="refused" v-bind:data-id-user="notif.userId">N</span></li>',
+  methods: {
+    action: function (event) {
+      let userPseudoRequest = event.currentTarget.getAttribute('data-id-user')
+      let action = event.currentTarget.getAttribute('data-action')
+      let parentId = event.currentTarget.parentNode.getAttribute('id')
+      console.log('in action', userPseudoRequest, action, parentId)
+      window.socket.emit('notification.response', {action: action, idUserReceiver: window.localStorage.getItem('id_user'), idUserSend: userPseudoRequest, id: parentId})
+    }
+  }
 })
