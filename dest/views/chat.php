@@ -1,17 +1,6 @@
 <?php
-
-
-
-  //on click
-  // if($flag==='true'){
-  //   header('Location: index.php?action=chat&b=fco');
-  // }
-  // else {
-
-  // }
   var_dump($message_error_register);
-  var_dump($statut_register);
-  
+  var_dump($message_error_register2);
 
 ?>
 
@@ -30,32 +19,30 @@
     <title>Page d'accueil</title>
 
     <!-- <link rel="stylesheet" href="http://localhost/ECVDigital/Workshop/dest/assets/css/all.css"> -->
-    <!-- <link rel="stylesheet" href="http://localhost/ECV_Project/dest/assets/css/all.css"> -->
+    <link rel="stylesheet" href="http://localhost/ECV_Project/dest/assets/css/all.css">
 </head>
 <body id="chat">
 
-    <form style="" method="post" action="index.php?action=chat&b=fco">
-        <input type="text" name="pseudo">
-        <button type="submit" name="button">se connecter</button>
-      </form>
-  <section>
+  <form id="addFriend" method="post" action="index.php?action=chat&param=addFriend">
+    <input type="text" name="pseudo">
+    <button type="submit" name="button">Valider</button>
+  </form>
 
+  <form id="addChannel" method="post" action="index.php?action=chat&param=addChannel">
+    <input type="text" name="channelName">
+    <button type="submit" name="button">envoie salon</button>
+  </form>
+
+  <section>
     <ul id="messages"></ul>
 
     <form id="socket">
       <input id="m" autocomplete="off" /><button>Send</button>
     </form>
-
   </section>
 
-
-
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
-
-
   <script src="http://localhost:8080/socket.io/socket.io.js"></script>
-
-
   <script>
 
   $(function () {
@@ -81,7 +68,6 @@
 
   });
   </script>
-
 
 </body>
 </html>

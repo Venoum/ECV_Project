@@ -3,53 +3,100 @@
 
 if ($action === 'chat')
 {
-  // renvoyer l'ID
-  $request = "SELECT fr_id_user_send FROM friends WHERE fr_id_user_send = '$pseudo'";
-  
-  // $flag = 'false';
-  $b = $_GET['b'];
-  $message_error_register ='bb';
-  $statut_register =false;
+  $message_error_register = false;
+  $message_error_register2 = false;
 
-  if ( isset($_POST['pseudo']))
+  //addFriend Action
+  if (isset($_POST['pseudo']) and isset($_GET['param']) and $_GET['param'] === 'addFriend')
   {
-  	//pour le message register faire un switch avec plusieurs error message et final master error message qui rendvoit le bon message
-  	//rajouter des conditions selon le cas expl: si pas de user break if
-
   	//user doesnt exist
-
     $pseudo = $_POST['pseudo'];
-    var_dump($pseudo);
-    $request = "SELECT us_pdeudo FROM users WHERE us_pseudo = '$pseudo'";
+    //get receiver and user info
+    $requestReceiverID = "SELECT us_id FROM users WHERE us_pseudo = '$pseudo'";
+    $receiverID = myFetchAssoc($requestReceiverID);
+    // $requestUserName = "SELECT us_pseudo FROM users WHERE us_id = $id";
+    // $userName['us_pseudo'] = myFetchAssoc($requestUserName);
 
-
-    $result = myQuery($request);
-    var_dump($result);
-    if ($request)
-    	$statut_register = true;
-  		//
+    $requestCheckUser = "SELECT us_pseudo FROM users WHERE us_pseudo = '$pseudo'";
+    $result = myFetchAssoc($requestCheckUser);
+    if ($result)
+    {
+    	$statut_register_user = true;
+    }
     else
-      	$message_error_register = 'L\'utilisateur n\'existe pas';
+    {
+      $message_error_register = 'L\'utilisateur n\'existe pas';
+    }
 
     //already a friend
-    //TODO get id from sender and receiver
+    if (isset($statut_register_user)) {
+      $requestCheckFriend = "SELECT fr_id_user_send FROM friends WHERE fr_id_user_send = 31 AND fr_id_user_receiver = ".$receiverID['us_id']."";
+      $result2 = myFetchAssoc($requestCheckFriend);
+      if ($result2){
+        $message_error_register = 'Vous êtes déjà amis avec '.$pseudo;
 
-    $request2 = "SELECT fr_id_user_send FROM friends WHERE fr_id_user_send = '$id' AND fr_id_user_receiver = '$id2'";
-    myQuery($request2);
-    if ($request2)
-    	$statut_register_friend = true;
+        //if already request and status : refused
+        $requestAddFriendStatus = "SELECT fr_status FROM friends WHERE fr_id_user_send = 31 AND fr_id_user_receiver = ".$receiverID['us_id']."";
+        $result3 = myFetchAssoc($requestAddFriendStatus);
+        if ($result3['fr_status'] === 'refused') {
+          $message_error_register = 'Erreur : '.$pseudo.' ne souhaite pas devenir votre amis';
+        }
+      }
+      else {
+        $statut_register_friend = true;
+      }
 
-  	//request send
-  	//TODO get id from sender and receiver
+      //send request
+      if (isset($statut_register_friend)) {
+        $requestAddFriend = "INSERT INTO friends (`fr_id_user_send`, `fr_id_user_receiver`, `fr_status`) VALUES (31, ".$receiverID['us_id'].", 'pending')";
+        $result4 = myQuery($requestAddFriend);
+        if (!$result4){
+          $message_error_register = 'Problème de connexion base de donnée';
+        } 
+        else {
 
-    $request2 = "INSERT INTO friends (`fr_id_user_send`, `fr_id_user_receiver`, `fr_status`) VALUES ('$id', '$id2', 'Sent')";
-    myQuery($request2);
-    if ($request2)
-    	$statut_register_friend = true;
-    else
-    	$message_error_register = 'Problème de connexion bdd';
+          //create channel
+          $datePrivate = date("d.m.y"); ;
+          $requestAddChannel = "INSERT INTO channels (`ch_name`, `ch_type`, `ch_created`) VALUES ('".$userName['us_pseudo']." ".$pseudo."', 'private', '".$datePrivate."')";
+          $result5 = myQuery($requestAddChannel);
+          if (!$result5){
+            $message_error_register = 'Problème de connexion base de donnée';
+          }
+        }
+      }
+    }
   }
   else {
-  	$message_error_register = 'manque un champs';
+  	$message_error_register = 'manque un champs : Ajout Amis';
+  }
+
+  //addChannel Action
+  if (isset($_POST['channelName']) and isset($_GET['param']) and $_GET['param'] === 'addChannel')
+  {
+    $channelName = $_POST['channelName'];
+    //channel already exist
+    $requestCheckChannel = "SELECT ch_name FROM channels WHERE ch_name = '$channelName' ";
+    $result6 = myFetchAssoc($requestCheckChannel);
+    if (!$result6)
+    {
+      $statut_register_channel = true;
+      echo "string";
+    }
+    else
+    {
+      $message_error_register = 'Le salon $channelName existe déjà';
+    }
+
+    if (isset($statut_register_channel)){
+      $datePublic = date("d.m.y"); ;
+      $requestAddChannelPublic = "INSERT INTO channels (`ch_name`, `ch_type`, `ch_created`) VALUES ('".$channelName."', 'public', '".$datePublic."')";
+      $result7 = myQuery($requestAddChannelPublic);
+      if (!$result7){
+        $message_error_register = 'Problème de connexion base de donnée';
+      }
+    }
+  }
+  else {
+    $message_error_register2 = 'manque un champs : Ajout Salon';
   }
 }

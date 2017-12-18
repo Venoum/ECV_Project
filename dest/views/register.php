@@ -1,6 +1,6 @@
 <?php
 
-
+  var_dump($message_error_register);
 
   if ($statut_register)
     header('Location: index.php?action=chat');
