@@ -39,14 +39,18 @@
     </header>
 
     <nav>
+
       <ul class="nav-first">
         <li class="bt bt-nav selected" data-menu-block="friendsList">
           <img class="icon-nav" src="" alt="friend">
           <ul class="nav-second channels private active">
             <li class="input-add">
               <form id="addFriend" method="post" action="index.php?action=chat&param=addFriend">
-                <input type="text" name="pseudo" placeholder="ajouter un ami">
-                <button type="submit" name="button">Valider amis</button>
+                <input type="text" name="pseudo">
+                <button type="submit" name="button">Valider</button>
+                <?php if (isset($message_validate_friend)): ?>
+                  <p class="error"><?php echo $message_validate_friend; ?></p>
+                <?php endif; ?>
               </form>
             </li>
             <?php foreach ($channels_private as $channel) : ?>
@@ -59,8 +63,11 @@
           <ul class="nav-second channels public">
             <li class="input-add">
               <form id="addChannel" method="post" action="index.php?action=chat&param=addChannel">
-                <input type="text" name="channelName" placeholder="créer un channel">
+                <input type="text" name="channelName">
                 <button type="submit" name="button">envoie salon</button>
+                <?php if (isset($message_validate_channel)): ?>
+                  <p class="error"><?php echo $message_validate_channel; ?></p>
+                <?php endif; ?>
               </form>
             </li>
             <?php foreach ($channels_public as $channel) : ?>
@@ -100,6 +107,20 @@
 
 
   </div>
+
+
+
+
+  <form id="addFriend" method="post" action="index.php?action=chat&param=addFriend">
+    <input type="text" name="pseudo">
+    <button type="submit" name="button">Valider</button>
+    <?php if (isset($message_validate_friend)): ?>
+      <p class="error"><?php echo $message_validate_friend; ?></p>
+    <?php endif; ?>
+  </form>
+
+
+
 
 
 
