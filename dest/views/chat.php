@@ -50,7 +50,6 @@
 
 
   <!-- MENU CHANNELS -->
-  <!-- TODO : spliter amis et salons public voir php trier tableau -->
   <nav class="channels-c">
     <ul class="channels public">
       <?php foreach ($channels_public as $channel) : ?>

@@ -80,13 +80,13 @@ if ($action === 'chat')
 
     //already a friend
     if (isset($statut_register_user)) {
-      $requestCheckFriend = "SELECT fr_id_user_send FROM friends WHERE fr_id_user_send = 31 AND fr_id_user_receiver = ".$receiverID['us_id']."";
+      $requestCheckFriend = "SELECT fr_id_user_send FROM friends WHERE fr_id_user_send = $id_user AND fr_id_user_receiver = ".$receiverID['us_id']."";
       $result2 = myFetchAssoc($requestCheckFriend);
       if ($result2){
         $message_error_register = 'Vous êtes déjà amis avec '.$pseudo;
 
         //if already request and status : refused
-        $requestAddFriendStatus = "SELECT fr_status FROM friends WHERE fr_id_user_send = 31 AND fr_id_user_receiver = ".$receiverID['us_id']."";
+        $requestAddFriendStatus = "SELECT fr_status FROM friends WHERE fr_id_user_send = $id_user AND fr_id_user_receiver = ".$receiverID['us_id']."";
         $result3 = myFetchAssoc($requestAddFriendStatus);
         if ($result3['fr_status'] === 'refused') {
           $message_error_register = 'Erreur : '.$pseudo.' ne souhaite pas devenir votre amis';
@@ -98,16 +98,16 @@ if ($action === 'chat')
 
       //send request
       if (isset($statut_register_friend)) {
-        $requestAddFriend = "INSERT INTO friends (`fr_id_user_send`, `fr_id_user_receiver`, `fr_status`) VALUES (31, ".$receiverID['us_id'].", 'pending')";
+        $requestAddFriend = "INSERT INTO friends (`fr_id_user_send`, `fr_id_user_receiver`, `fr_status`) VALUES ($id_user, ".$receiverID['us_id'].", 'pending')";
         $result4 = myQuery($requestAddFriend);
         if (!$result4){
           $message_error_register = 'Problème de connexion base de donnée';
-        } 
+        }
         else {
 
           //create channel
           $datePrivate = date("d.m.y"); ;
-          $requestAddChannel = "INSERT INTO channels (`ch_name`, `ch_type`, `ch_created`) VALUES ('".$userName['us_pseudo']." ".$pseudo."', 'private', '".$datePrivate."')";
+          $requestAddChannel = "INSERT INTO channels (`ch_name`, `ch_type`, `ch_created`) VALUES ('".$pseudo_user." ".$pseudo."', 'private', '".$datePrivate."')";
           $result5 = myQuery($requestAddChannel);
           if (!$result5){
             $message_error_register = 'Problème de connexion base de donnée';
