@@ -6,6 +6,7 @@ if ($action === 'chat')
   // renvoyer l'ID
   $id_user = strval($_COOKIE['id_user']);
   $pseudo_user = strval($_COOKIE['pseudo_user']);
+  $pseudo_user = str_replace("'", "\'", $pseudo_user);
   $message = 'bienvenue';
   $channels_public = [];
   $channels_private = [];
@@ -61,6 +62,7 @@ if ($action === 'chat')
   {
     //user doesnt exist
     $pseudo = $_POST['pseudo'];
+    $pseudo = str_replace("'", "\'", $pseudo);
     //get receiver and user info
     $requestReceiverID = "SELECT us_id FROM users WHERE us_pseudo = '$pseudo'";
     $receiverID = myFetchAssoc($requestReceiverID);
@@ -105,13 +107,24 @@ if ($action === 'chat')
         }
         else {
 
-          //create channel
-          $datePrivate = date("d.m.y"); ;
-          $requestAddChannel = "INSERT INTO channels (`ch_name`, `ch_type`, `ch_created`) VALUES ('".$pseudo_user." ".$pseudo."', 'private', '".$datePrivate."')";
+          //create channel - get date - compare name to get alphabetical order
+          $datePrivate = date("d.m.y");
+          $pseudoCompareOrder = strcmp($pseudo, $pseudo_user);
+
+          if ($pseudoCompareOrder == 0) {
+            $allPseudo = $pseudo." ".$pseudo_user;
+          } elseif ($pseudoCompareOrder == -1) {
+            $allPseudo = $pseudo." ".$pseudo_user;
+          } elseif ($pseudoCompareOrder == 1) {
+            $allPseudo = $pseudo_user." ".$pseudo;
+          }
+
+          $requestAddChannel = "INSERT INTO channels (`ch_name`, `ch_type`, `ch_created`) VALUES ('".$allPseudo."', 'private', '".$datePrivate."')";
           $result5 = myQuery($requestAddChannel);
           if (!$result5){
             $message_error_register = 'Problème de connexion base de donnée';
           }
+          $message_validate_friend = "Votre demande d'ajouter ".$pseudo." en amis est envoyée";
         }
       }
     }
@@ -124,6 +137,7 @@ if ($action === 'chat')
   if (isset($_POST['channelName']) and isset($_GET['param']) and $_GET['param'] === 'addChannel')
   {
     $channelName = $_POST['channelName'];
+    $channelName = str_replace("'", "\'", $channelName);
     //channel already exist
     $requestCheckChannel = "SELECT ch_name FROM channels WHERE ch_name = '$channelName' ";
     $result6 = myFetchAssoc($requestCheckChannel);
@@ -138,12 +152,13 @@ if ($action === 'chat')
     }
 
     if (isset($statut_register_channel)){
-      $datePublic = date("d.m.y"); ;
+      $datePublic = date("d.m.y");
       $requestAddChannelPublic = "INSERT INTO channels (`ch_name`, `ch_type`, `ch_created`) VALUES ('".$channelName."', 'public', '".$datePublic."')";
       $result7 = myQuery($requestAddChannelPublic);
       if (!$result7){
         $message_error_register = 'Problème de connexion base de donnée';
       }
+      $message_validate_channel = "Le salon ".$channelName." a été créé";
     }
   }
   else {
