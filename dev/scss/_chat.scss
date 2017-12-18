@@ -2,14 +2,97 @@
 
   header {
     position: fixed;
-    position: fixed;
     top: 0;
-    left: 0;
-    border-bottom: solid 2px black;
+    left: 0px;
     width: 100%;
     background-color: white;
     height: 50px;
-    text-align: center;
+    padding-left: 50px;
+
+    .logo {
+      background-color: blue;
+      width: 100px;
+      height: 50px;
+      text-align: left;
+    }
+
+    .deconnect {
+      width: 50px;
+      height: 50px;
+      background-color: yellow;
+      position: absolute;
+      right: 50px;
+      left: auto;
+      top: 0;
+    }
+
+  }
+
+  nav {
+    position: absolute;
+    top: 50px;
+    width: 100%;
+
+    .nav-first {
+      background-color: red;
+      width: 100%;
+      text-align: center;
+      font-size: 0;
+
+      li.bt-nav {
+        width: calc(100% / 3 - 1px);
+        display: inline-block;
+        height: 50px;
+        font-size: 14px;
+        padding-top: 10px;
+        position: relative;
+
+        &.selected {
+          background-color: pink;
+        }
+
+        .icon-nav {
+          width: 100%;
+          height: 30px;
+        }
+
+        .number {
+          position: absolute;
+          top: 5px;
+          left: 50%;
+          width: 20px;
+          height: 20px;
+          border-radius: 100%;
+          line-height: 22px;
+          text-align: center;
+          color: white;
+          background-color: red;
+        }
+
+        .nav-second {
+          display: none;
+          position: fixed;
+          top: 100px;
+          left: 0;
+          width: 100%;
+          min-height: calc(100% - 100px);
+          z-index: 1;
+          text-align: left;
+          padding: 50px;
+
+          &.active {
+            display: block;
+          }
+
+          li {
+            border: solid 1px black;
+            margin-bottom: 20px;
+            padding: 20px 0;
+          }
+        }
+      }
+    }
+
   }
 
 

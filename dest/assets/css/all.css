@@ -20,70 +20,6 @@ a {
 ul {
   list-style: none; }
 
-#chat .logo {
-  display: inline-block;
-  background-color: blue;
-  width: 100px;
-  height: 50px; }
-
-#chat .deconnect {
-  width: 50px;
-  height: 50px;
-  background-color: yellow; }
-
-#chat .bt-notification {
-  position: absolute;
-  right: 20px;
-  left: auto;
-  top: 12.5px;
-  width: 25px;
-  height: 25px; }
-  #chat .bt-notification .number {
-    background-color: white; }
-
-#chat .channels-c, #chat .notifications-c {
-  position: fixed;
-  top: 50px;
-  width: 100vw;
-  z-index: 99999;
-  background-color: black;
-  display: none;
-  padding: 0 20px;
-  width: 100%;
-  text-align: center; }
-  #chat .channels-c.active, #chat .notifications-c.active {
-    display: block; }
-
-#chat .channels-c ul {
-  text-align: center; }
-  #chat .channels-c ul li {
-    padding: 10px;
-    margin: 10px;
-    cursor: pointer;
-    display: inline-block;
-    background-color: white;
-    color: black; }
-    #chat .channels-c ul li.selected {
-      background-color: pink !important;
-      color: black; }
-
-#chat .notifications-c {
-  padding: 20px; }
-  #chat .notifications-c li {
-    width: 80%;
-    text-align: center;
-    background-color: white;
-    color: black;
-    display: inline-block;
-    padding: 10px 0; }
-    #chat .notifications-c li p {
-      margin-bottom: 10px; }
-    #chat .notifications-c li .bt-action {
-      background-color: black;
-      color: white;
-      margin-left: 20px;
-      padding: 5px; }
-
 #chat .window-chat {
   position: fixed;
   top: 100px;
@@ -180,23 +116,77 @@ body {
   width: 10px;
   height: 10px; }
 
-.bt-round {
-  color: black;
-  width: 100%;
-  height: 100%;
-  min-width: 25px;
-  min-height: 25px;
-  text-align: center;
-  line-height: 25px;
-  border-radius: 100%; }
-
 #chat header {
   position: fixed;
-  position: fixed;
   top: 0;
-  left: 0;
-  border-bottom: solid 2px black;
+  left: 0px;
   width: 100%;
   background-color: white;
   height: 50px;
-  text-align: center; }
+  padding-left: 50px; }
+  #chat header .logo {
+    background-color: blue;
+    width: 100px;
+    height: 50px;
+    text-align: left; }
+  #chat header .deconnect {
+    width: 50px;
+    height: 50px;
+    background-color: yellow;
+    position: absolute;
+    right: 50px;
+    left: auto;
+    top: 0; }
+
+#chat nav {
+  position: absolute;
+  top: 50px;
+  width: 100%; }
+  #chat nav .nav-first {
+    background-color: red;
+    width: 100%;
+    text-align: center;
+    font-size: 0; }
+    #chat nav .nav-first li.bt-nav {
+      width: -webkit-calc(100% / 3 - 1px);
+      width: -moz-calc(100% / 3 - 1px);
+      width: calc(100% / 3 - 1px);
+      display: inline-block;
+      height: 50px;
+      font-size: 14px;
+      padding-top: 10px;
+      position: relative; }
+      #chat nav .nav-first li.bt-nav.selected {
+        background-color: pink; }
+      #chat nav .nav-first li.bt-nav .icon-nav {
+        width: 100%;
+        height: 30px; }
+      #chat nav .nav-first li.bt-nav .number {
+        position: absolute;
+        top: 5px;
+        left: 50%;
+        width: 20px;
+        height: 20px;
+        border-radius: 100%;
+        line-height: 22px;
+        text-align: center;
+        color: white;
+        background-color: red; }
+      #chat nav .nav-first li.bt-nav .nav-second {
+        display: none;
+        position: fixed;
+        top: 100px;
+        left: 0;
+        width: 100%;
+        min-height: -webkit-calc(100% - 100px);
+        min-height: -moz-calc(100% - 100px);
+        min-height: calc(100% - 100px);
+        z-index: 1;
+        text-align: left;
+        padding: 50px; }
+        #chat nav .nav-first li.bt-nav .nav-second.active {
+          display: block; }
+        #chat nav .nav-first li.bt-nav .nav-second li {
+          border: solid 1px black;
+          margin-bottom: 20px;
+          padding: 20px 0; }

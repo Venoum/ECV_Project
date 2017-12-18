@@ -39,29 +39,41 @@
     </header>
 
     <nav>
-      <ul>
-        <li class="bt bt-nav" data-menu-block="friendsList">
-          <img src="" alt="friend">
-          <ul class="channels private">
+      <ul class="nav-first">
+        <li class="bt bt-nav selected" data-menu-block="friendsList">
+          <img class="icon-nav" src="" alt="friend">
+          <ul class="nav-second channels private active">
+            <li class="input-add">
+              <form id="addFriend" method="post" action="index.php?action=chat&param=addFriend">
+                <input type="text" name="pseudo" placeholder="ajouter un ami">
+                <button type="submit" name="button">Valider amis</button>
+              </form>
+            </li>
             <?php foreach ($channels_private as $channel) : ?>
               <li class="channel <?= $channel->type ?>" data-name="<?= $channel->slug ?>"><?= $channel->name ?></li>
             <?php endforeach; ?>
           </ul>
         </li>
         <li class="bt bt-nav" data-menu-block="publicList">
-          <img src="" alt="public">
-          <ul class="channels public">
+          <img class="icon-nav" src="" alt="public">
+          <ul class="nav-second channels public">
+            <li class="input-add">
+              <form id="addChannel" method="post" action="index.php?action=chat&param=addChannel">
+                <input type="text" name="channelName" placeholder="créer un channel">
+                <button type="submit" name="button">envoie salon</button>
+              </form>
+            </li>
             <?php foreach ($channels_public as $channel) : ?>
               <li class="channel <?= $channel->type ?>" data-name="<?= $channel->slug ?>"><?= $channel->name ?></li>
             <?php endforeach; ?>
           </ul>
         </li>
         <li class="bt bt-nav bt-notification" data-menu-block="notifList">
-          <img src="" alt="notifs">
+          <img class="icon-nav" src="" alt="notifs">
           <div class="number bt-round">
             <p></p>
           </div>
-          <ul id="notifications">
+          <ul class="nav-second" id="notifications">
             <notif-item
                 v-for="notif in notifs"
                 v-bind:notif="notif"
@@ -84,15 +96,7 @@
       <?php $channel->get_section() ?>
     <?php endforeach; ?>
 
-    <form id="addFriend" method="post" action="index.php?action=chat&param=addFriend">
-      <input type="text" name="pseudo">
-      <button type="submit" name="button">Valider amis</button>
-    </form>
 
-    <form id="addChannel" method="post" action="index.php?action=chat&param=addChannel">
-      <input type="text" name="channelName">
-      <button type="submit" name="button">envoie salon</button>
-    </form>
 
 
   </div>
