@@ -7,7 +7,9 @@ if ($action === 'chat')
   $id_user = strval($_COOKIE['id_user']);
   $pseudo_user = strval($_COOKIE['pseudo_user']);
   $message = 'bienvenue';
-  $channels = [];
+  $channels_public = [];
+  $channels_private = [];
+
   $notifs = [];
 
   // récupère les channels public
@@ -20,7 +22,7 @@ if ($action === 'chat')
 
   foreach ($result_channels_public as $channel_public) {
     $new_channel = new Channel($channel_public['ch_type'], $channel_public['ch_name'], $channel_public['ch_id']);
-    $channels[] = $new_channel;
+    $channels_public[] = $new_channel;
   }
 
 
@@ -33,36 +35,9 @@ if ($action === 'chat')
 
   foreach ($result_channels_private as $channel_private) {
     $new_channel = new Channel($channel_private['ch_type'], $channel_private['ch_name'], $channel_private['ch_id']);
-    $channels[] = $new_channel;
+    $channels_private[] = $new_channel;
   }
 
-
-
-  // // récupère les amis
-  // $request_friends =
-  // " SELECT users.us_pseudo
-  // FROM users
-  // INNER JOIN friends ON
-  // ( friends.fr_id_user_send = users.us_id
-  // AND friends.fr_id_user_receiver = $id_user
-  // AND fr_status = 'accepted' )
-  // OR
-  // ( friends.fr_id_user_receiver = users.us_id
-  // AND friends.fr_id_user_send = $id_user
-  // AND fr_status = 'accepted' ) ";
-  // $result_friends = myFetchAllAssoc($request_friends);
-  //
-  // foreach ($result_friends as $friend_name) {
-  //   $name_channel = null;
-  //   $compare = strcasecmp($friend_name['us_pseudo'], $pseudo_user);
-  //   if ($compare > 0)
-  //     $name_channel = $pseudo_user.$friend_name['us_pseudo'];
-  //   else
-  //     $name_channel = $friend_name['us_pseudo'].$pseudo_user;
-  //
-  //   $new_channel = new Channel('private', $friend_name['us_pseudo'], $name_channel);
-  //   $friends[] = $new_channel;
-  // }
 
 
   // récupère les notifications

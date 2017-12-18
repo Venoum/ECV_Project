@@ -52,8 +52,13 @@
   <!-- MENU CHANNELS -->
   <!-- TODO : spliter amis et salons public voir php trier tableau -->
   <nav class="channels-c">
-    <ul id="channels">
-      <?php foreach ($channels as $channel) : ?>
+    <ul class="channels public">
+      <?php foreach ($channels_public as $channel) : ?>
+        <li class="channel <?= $channel->type ?>" data-name="<?= $channel->slug ?>"><?= $channel->name ?></li>
+      <?php endforeach; ?>
+    </ul>
+    <ul class="channels private">
+      <?php foreach ($channels_private as $channel) : ?>
         <li class="channel <?= $channel->type ?>" data-name="<?= $channel->slug ?>"><?= $channel->name ?></li>
       <?php endforeach; ?>
     </ul>
@@ -81,54 +86,12 @@
 
 
   <!-- CHAT SALONS -->
-  <?php foreach ($channels as $channel) : ?>
+  <?php foreach ($channels_public as $channel) : ?>
+    <?php $channel->get_section() ?>
+  <?php endforeach; ?>
 
-    <section class="window-chat <?= $channel->type ?>" id="<?= $channel->slug ?>">
-
-      <h6 class="channel-name"><?= $channel->name ?></h6>
-
-      <div class="bt more-messages" v-on:click="loadMessages">
-        <p>+ de messages</p>
-      </div>
-
-      <div class="container-messages">
-        <ul class="messages" id="<?= $channel->slug ?>Message">
-          <message-item
-              v-for="message in messages"
-              v-bind:message="message"
-              v-bind:key="message.id"
-            ></message-item>
-        </ul>
-      </div>
-
-      <form v-on:submit="sendMessage">
-
-        <div class="message-c">
-
-          <div class="images-c">
-          </div>
-
-          <textarea class="message" id='<?= $channel->slug ?>Input' autocomplete="off" ></textarea>
-
-          <div class="message-button" data-button="buttonCamera">
-            <p>camera</p>
-          </div>
-
-          <div class="message-button" data-button="buttonImport">
-            <p>upload</p>
-          </div>
-        </div>
-
-        <button>Send</button>
-
-        <div class="hidden">
-          <input type="file" accept="image/*" class="buttonImport"/>
-          <input type="file" accept="image/*" capture="camera" class="buttonCamera"/>
-        </div>
-
-      </form>
-    </section>
-
+  <?php foreach ($channels_private as $channel) : ?>
+    <?php $channel->get_section() ?>
   <?php endforeach; ?>
 
   <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js" integrity="sha384-aBL3Lzi6c9LNDGvpHkZrrm3ZVsIwohDD7CDozL0pk8FwCrfmV7H9w8j3L7ikEv6h" crossorigin="anonymous"></script>

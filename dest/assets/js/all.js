@@ -494,7 +494,6 @@ Vue.component('notif-item', {
       var userPseudoRequest = event.currentTarget.getAttribute('data-id-user');
       var action = event.currentTarget.getAttribute('data-action');
       var parentId = event.currentTarget.parentNode.getAttribute('id');
-      console.log('in action', userPseudoRequest, action, parentId);
       window.socket.emit('notification.response', { action: action, idUserReceiver: window.localStorage.getItem('id_user'), idUserSend: userPseudoRequest, id: parentId });
     }
   }
