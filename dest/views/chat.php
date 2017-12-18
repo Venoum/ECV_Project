@@ -94,6 +94,16 @@
     <?php $channel->get_section() ?>
   <?php endforeach; ?>
 
+  <form id="addFriend" method="post" action="index.php?action=chat&param=addFriend">
+    <input type="text" name="pseudo">
+    <button type="submit" name="button">Valider amis</button>
+  </form>
+
+  <form id="addChannel" method="post" action="index.php?action=chat&param=addChannel">
+    <input type="text" name="channelName">
+    <button type="submit" name="button">envoie salon</button>
+  </form>
+
   <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js" integrity="sha384-aBL3Lzi6c9LNDGvpHkZrrm3ZVsIwohDD7CDozL0pk8FwCrfmV7H9w8j3L7ikEv6h" crossorigin="anonymous"></script>
 	<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js" integrity="sha384-Dziy8F2VlJQLMShA6FHWNul/veM9bCkRUaLqr199K94ntO5QUrLJBEbYegdSkkqX" crossorigin="anonymous"></script> -->
 
