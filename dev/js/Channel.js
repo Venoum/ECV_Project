@@ -29,7 +29,7 @@ class Channel {
     t.fromServerSide()
     t.watchers()
 
-    // charge les denriers messages
+    // charge les derniers messages
     t.loadMessage()
   }
 

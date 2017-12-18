@@ -1,28 +1,29 @@
 #chat {
 
-  header {
-    position: fixed;
-    position: fixed;
-    top: 0;
-    left: 0;
-    border-bottom: solid 2px black;
-    width: 100%;
-    background-color: black;
-    height: 50px;
-    text-align: center;
-  }
+  // header {
+  //   position: fixed;
+  //   position: fixed;
+  //   top: 0;
+  //   left: 0;
+  //   border-bottom: solid 2px black;
+  //   width: 100%;
+  //   background-color: black;
+  //   height: 50px;
+  //   text-align: center;
+  // }
 
-  .burger-c {
-    width: 50px;
-    height: 50px;
-    position: absolute;
-    top: 0;
-    left: 20px;
-  }
 
   .logo {
     display: inline-block;
+    background-color: blue;
+    width: 100px;
+    height: 50px;
+  }
 
+  .deconnect {
+    width: 50px;
+    height: 50px;
+    background-color: yellow;
   }
 
   .bt-notification {

@@ -90,7 +90,13 @@ io.on('connection', function (socket) {
 
   // quand se deconnecte
   socket.on('disconnect', function () {
-    console.log('user non connecté - A FAIRE !!')
+    // effacer le socket
+    let sql = 'UPDATE users SET us_socket_id = 0 WHERE us_pseudo = "' + socket.username + '"'
+    con.query(sql, function (err, result) {
+      // TODO : envoyer message erreur côté client
+      if (err) console.log(err)
+      else console.log('user déconnecté')
+    })
   })
 })
 

@@ -39,7 +39,7 @@ var Channel = function () {
       t.fromServerSide();
       t.watchers();
 
-      // charge les denriers messages
+      // charge les derniers messages
       t.loadMessage();
     }
   }, {
@@ -263,7 +263,6 @@ var Homepage = function () {
     t.userId = window.localStorage.getItem('id_user');
     t.userPseudo = window.localStorage.getItem('pseudo_user');
     window.socket = io.connect('http://localhost:8080');
-    t.burger = document.querySelectorAll('.burger-c')[0];
     t.channelList = document.querySelectorAll('.channels-c')[0];
     t.btNotifs = document.querySelectorAll('.bt-notification')[0];
     t.notifContainer = document.querySelectorAll('.notifications-c')[0];
@@ -337,12 +336,6 @@ var Homepage = function () {
           t.name = this.getAttribute('data-name');
           t.openChat();
         });
-      });
-
-      // watcher channel menu
-      t.burger.addEventListener('click', function () {
-        if (t.channelList.classList.contains('active')) t.channelList.classList.remove('active');else t.channelList.classList.add('active');
-        if (t.notifContainer.classList.contains('active')) t.notifContainer.classList.remove('active');
       });
 
       // watcher notifs menu

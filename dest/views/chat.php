@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Page d'accueil</title>
-    <link rel="stylesheet" href="http://192.168.1.50:8888/ECVDigital/Workshop/dest/assets/css/all.css">
+    <link rel="stylesheet" href="http://localhost:8888/ECVDigital/Workshop/dest/assets/css/all.css">
 
     <script src="https://unpkg.com/vue"></script>
 </head>
@@ -25,91 +25,87 @@
 
   ?>
 
+  <div class="mobile-wrapper">
 
-  <header>
 
-    <div class="burger-c bt">
-      <svg>
-        <rect width="50px" height="4px" fill="white" x="0" y="10"></rect>
-        <rect width="50px" height="4px" fill="white" x="0" y="23px"></rect>
-        <rect width="50px" height="4px" fill="white" x="0" y="36px"></rect>
-      </svg>
-    </div>
+    <header>
 
-    <div class="logo">
-      logo
-    </div>
-
-    <div class="bt bt-notification">
-      <div class="icon"></div>
-      <div class="number bt-round">
-        <p></p>
+      <div class="logo">
+        logo
       </div>
-    </div>
-  </header>
+
+      <a href="index.php" class="deconnect">deco</a>
+
+    </header>
+
+    <nav>
+      <ul>
+        <li class="bt bt-nav" data-menu-block="friendsList">
+          <img src="" alt="friend">
+          <ul class="channels private">
+            <?php foreach ($channels_private as $channel) : ?>
+              <li class="channel <?= $channel->type ?>" data-name="<?= $channel->slug ?>"><?= $channel->name ?></li>
+            <?php endforeach; ?>
+          </ul>
+        </li>
+        <li class="bt bt-nav" data-menu-block="publicList">
+          <img src="" alt="public">
+          <ul class="channels public">
+            <?php foreach ($channels_public as $channel) : ?>
+              <li class="channel <?= $channel->type ?>" data-name="<?= $channel->slug ?>"><?= $channel->name ?></li>
+            <?php endforeach; ?>
+          </ul>
+        </li>
+        <li class="bt bt-nav bt-notification" data-menu-block="notifList">
+          <img src="" alt="notifs">
+          <div class="number bt-round">
+            <p></p>
+          </div>
+          <ul id="notifications">
+            <notif-item
+                v-for="notif in notifs"
+                v-bind:notif="notif"
+                v-bind:key="notif.id"
+              ></notif-item>
+          </ul>
+        </li>
+      </ul>
+    </nav>
 
 
-  <!-- MENU CHANNELS -->
-  <nav class="channels-c">
-    <ul class="channels public">
-      <?php foreach ($channels_public as $channel) : ?>
-        <li class="channel <?= $channel->type ?>" data-name="<?= $channel->slug ?>"><?= $channel->name ?></li>
-      <?php endforeach; ?>
-    </ul>
-    <ul class="channels private">
-      <?php foreach ($channels_private as $channel) : ?>
-        <li class="channel <?= $channel->type ?>" data-name="<?= $channel->slug ?>"><?= $channel->name ?></li>
-      <?php endforeach; ?>
-    </ul>
-  </nav>
 
 
-  <!-- NOTIFICATIONS -->
-  <div class="notifications-c">
-    <ul id="notifications">
-      <notif-item
-          v-for="notif in notifs"
-          v-bind:notif="notif"
-          v-bind:key="notif.id"
-        ></notif-item>
-    </ul>
+    <!-- CHAT SALONS -->
+    <?php foreach ($channels_public as $channel) : ?>
+      <?php $channel->get_section() ?>
+    <?php endforeach; ?>
+
+    <?php foreach ($channels_private as $channel) : ?>
+      <?php $channel->get_section() ?>
+    <?php endforeach; ?>
+
+    <form id="addFriend" method="post" action="index.php?action=chat&param=addFriend">
+      <input type="text" name="pseudo">
+      <button type="submit" name="button">Valider amis</button>
+    </form>
+
+    <form id="addChannel" method="post" action="index.php?action=chat&param=addChannel">
+      <input type="text" name="channelName">
+      <button type="submit" name="button">envoie salon</button>
+    </form>
+
+
   </div>
 
-  <?php foreach ($notifs as $notif) :?>
-    <!-- <li id="<?php echo $notif['id'] ?>">
-      <p><?php echo $notif['pseudo'] ?> veut être votre ami</p>
-      <span class="bt bt-add bt-round" data-action="accepted" data-user-pseudo="<?php echo $notif['id_user'] ?>">Y</span>
-      <span class="bt bt-remove bt-round" data-action="refused" data-user-pseudo="<?php echo $notif['id_user'] ?>">N</span>
-    </li> -->
-  <?php endforeach; ?>
 
-
-  <!-- CHAT SALONS -->
-  <?php foreach ($channels_public as $channel) : ?>
-    <?php $channel->get_section() ?>
-  <?php endforeach; ?>
-
-  <?php foreach ($channels_private as $channel) : ?>
-    <?php $channel->get_section() ?>
-  <?php endforeach; ?>
-
-  <form id="addFriend" method="post" action="index.php?action=chat&param=addFriend">
-    <input type="text" name="pseudo">
-    <button type="submit" name="button">Valider amis</button>
-  </form>
-
-  <form id="addChannel" method="post" action="index.php?action=chat&param=addChannel">
-    <input type="text" name="channelName">
-    <button type="submit" name="button">envoie salon</button>
-  </form>
 
   <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js" integrity="sha384-aBL3Lzi6c9LNDGvpHkZrrm3ZVsIwohDD7CDozL0pk8FwCrfmV7H9w8j3L7ikEv6h" crossorigin="anonymous"></script>
 	<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js" integrity="sha384-Dziy8F2VlJQLMShA6FHWNul/veM9bCkRUaLqr199K94ntO5QUrLJBEbYegdSkkqX" crossorigin="anonymous"></script> -->
 
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
-  <script src="http://192.168.1.50:8080/socket.io/socket.io.js"></script>
-  <script src="http://192.168.1.50:8888/ECVDigital/Workshop/dest/lib/jquery.ajax.min.js"></script>
-  <script src="http://192.168.1.50:8888/ECVDigital/Workshop/dest/assets/js/all.js"></script>
+  <script src="http://localhost:8080/socket.io/socket.io.js"></script>
+  <script src="http://localhost:8888/ECVDigital/Workshop/dest/lib/jquery.ajax.min.js"></script>
+  <script src="http://localhost:8888/ECVDigital/Workshop/dest/assets/js/all.js"></script>
 
 
 </body>

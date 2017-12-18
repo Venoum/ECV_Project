@@ -109,17 +109,19 @@ io.on('connection', function (socket) {
       if (err) console.log(err);
       // si ok on envoie le message
       else {
-          console.log('ok', socket.id);
           io.to(socket.id).emit('notification.response', data.id);
-          // effacer la notification en front ??
-          // io.to(room).emit('chat.message', {msg: msg, pseudo: socket.username, room: data.room, id: data.id, idMessage: result.insertId})
         }
     });
   });
 
   // quand se deconnecte
   socket.on('disconnect', function () {
-    console.log('user non connecté - A FAIRE !!');
+    // effacer le socket
+    var sql = 'UPDATE users SET us_socket_id = 0 WHERE us_pseudo = "' + socket.username + '"';
+    con.query(sql, function (err, result) {
+      // TODO : envoyer message erreur côté client
+      if (err) console.log(err);else console.log('user déconnecté');
+    });
   });
 });
 
