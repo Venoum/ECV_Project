@@ -1,5 +1,3 @@
-let templateNotif = '<svg viewBox="0 0 100 100"><path fill="#fdc67a" d="M50,2A48,48,0,1,0,98,50,48.05,48.05,0,0,0,50,2Z"/><path fill="#780e3b" d="M72.62,30.31,44.25,62.23,27.15,48.56a1.85,1.85,0,0,0-2.31,2.88L43.31,66.21A1.85,1.85,0,0,0,45.84,66L75.38,32.76a1.85,1.85,0,0,0-2.76-2.45Z"/></svg>'
-
 Vue.component('message-item', {
   props: ['message'],
   template: '<li v-bind:data-id-message="message.idMessage" v-bind:data-id-channel="message.idChannel" v-bind:class="message.class" v-html="message.content"></li>'

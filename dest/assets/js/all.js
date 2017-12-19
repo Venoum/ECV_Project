@@ -22,6 +22,8 @@ var Channel = function () {
     t.userId = window.localStorage.getItem('id_user');
     t.userPseudo = window.localStorage.getItem('pseudo_user');
 
+    t.arrowBack = document.querySelectorAll('section .container-title .back');
+
     t.ajaxUrl = 'http://localhost:8888/ECVDigital/Workshop/dest/controller/AjaxRequests.php';
     // lance init
     t.init();
@@ -67,11 +69,21 @@ var Channel = function () {
         }
       });
 
-      // boutons du formulaire
+      // boutons du formulaire envoi message
       Object.keys(t.buttons).map(function (key) {
         t.buttons[key].addEventListener('click', function () {
           var buttonName = this.getAttribute('data-button');
           document.querySelector('#' + t.name + ' .' + buttonName).click();
+        });
+      });
+
+      // arrow back channel
+      Object.keys(t.arrowBack).map(function (key) {
+        t.arrowBack[key].addEventListener('click', function () {
+          // remove class selected reviens au menu
+          var sectionSelected = document.querySelectorAll('section.selected')[0];
+          console.log(sectionSelected);
+          sectionSelected.classList.remove('selected');
         });
       });
 
@@ -165,7 +177,7 @@ var Channel = function () {
     value: function addMessage(data) {
       var t = this;
 
-      var content = '<p class="pseudo">' + data.pseudo + ' : </p>' + data.messageContent;
+      var content = '<p class="pseudo"> ' + data.pseudo + ' </p><div class="bubble">' + data.messageContent + '</div>';
       var idChannel = t.getChannelName();
       t.messageList.messages.push({ content: content, class: data.class, idMessage: data.idMessage, idChannel: idChannel });
     }
@@ -256,19 +268,19 @@ var Homepage = function () {
   function Homepage() {
     _classCallCheck(this, Homepage);
 
-    console.log('HOMEPAGE');
     var t = this;
 
     t.channels = document.getElementsByClassName('channel');
     t.userId = window.localStorage.getItem('id_user');
     t.userPseudo = window.localStorage.getItem('pseudo_user');
     window.socket = io.connect('http://localhost:8080');
-    t.channelList = document.querySelectorAll('.channels-c')[0];
+    // t.channelList = document.querySelectorAll('.channels-c')[0]
     t.btNotifs = document.querySelectorAll('.bt-notification')[0];
     t.notifContainer = document.querySelectorAll('.notifications-c')[0];
     t.notificationsArray = notificationsArray;
     t.number = document.querySelectorAll('.bt-notification .number p')[0];
     t.btSubmitForm = document.querySelectorAll('.nav-second form .bt-submit');
+    t.btNav = document.querySelectorAll('.nav-first .bt-nav');
 
     t.notifsList = new Vue({
       el: '#notifications',
@@ -329,11 +341,11 @@ var Homepage = function () {
       // watcher click de mes channels
       Object.keys(t.channels).map(function (key) {
         t.channels[key].addEventListener('click', function () {
-          // enleve les class
-          Object.keys(t.channels).map(function (key) {
-            t.channels[key].classList.remove('selected');
-          });
-          this.classList.add('selected');
+          // // enleve les class
+          // Object.keys(t.channels).map(function (key) {
+          //   t.channels[key].classList.remove('selected')
+          // })
+          // this.classList.add('selected')
           t.name = this.getAttribute('data-name');
           t.openChat();
         });
@@ -342,18 +354,37 @@ var Homepage = function () {
       // watcher notifs menu
       t.btNotifs.addEventListener('click', function () {
         if (t.notifContainer.classList.contains('active')) t.notifContainer.classList.remove('active');else t.notifContainer.classList.add('active');
-        if (t.channelList.classList.contains('active')) t.channelList.classList.remove('active');
+        // if (t.channelList.classList.contains('active')) t.channelList.classList.remove('active')
       });
 
       // watcher form
       Object.keys(t.btSubmitForm).map(function (key) {
         t.btSubmitForm[key].addEventListener('click', function () {
+
           var formId = this.getAttribute('data-form');
           var form = document.getElementById(formId);
           var button = form.querySelectorAll('button')[0];
           var inputValue = this.parentNode.querySelectorAll('input')[0].value;
           if (inputValue !== '') button.click();
           return false;
+        });
+      });
+
+      // watcher menu
+      Object.keys(t.btNav).map(function (key) {
+        t.btNav[key].addEventListener('click', function () {
+          // enlever toutes les class selected et active s'il y a
+          var activeElement = document.querySelectorAll('.nav-second.active');
+          Object.keys(activeElement).map(function (key) {
+            activeElement[key].classList.remove('active');
+          });
+          var selectedElement = document.querySelectorAll('.nav-first .selected')[0];
+          if (selectedElement) selectedElement.classList.remove('selected');
+          // ajout la class selected au menu
+          this.classList.add('selected');
+          // ajoute la class active à la seconde nav
+          var navSecond = this.querySelectorAll('.nav-second')[0];
+          navSecond.classList.add('active');
         });
       });
     }
@@ -375,9 +406,9 @@ var Homepage = function () {
       var channelsNav = document.querySelectorAll('[data-name]');
       var channelsWindow = document.querySelectorAll('.window-chat');
 
-      channelsNav.forEach(function (element) {
-        element.classList.remove('selected');
-      });
+      // channelsNav.forEach(function (element) {
+      //   element.classList.remove('selected')
+      // })
 
       channelsWindow.forEach(function (element) {
         element.classList.remove('selected');
@@ -388,7 +419,7 @@ var Homepage = function () {
       var windowCurrent = document.getElementById(t.name);
       windowCurrent.classList.add('selected');
 
-      t.channelList.classList.remove('active');
+      // t.channelList.classList.remove('active')
     }
   }, {
     key: 'userConnected',
@@ -411,7 +442,6 @@ var Homepage = function () {
 
         // reset le nombre de notifs
         t.setNumberNotif();
-        //
       });
     }
   }, {
@@ -446,6 +476,10 @@ var Homepage = function () {
 
       var number = t.notifsList.notifs.length;
       t.number.innerHTML = number;
+      var containerNumber = document.querySelectorAll('.bt-notification .number')[0];
+      containerNumber.classList.remove('active');
+
+      if (number === 0) containerNumber.classList.remove('active');else containerNumber.classList.add('active');
     }
   }]);
 
@@ -486,58 +520,15 @@ var Website = function () {
 var website = new Website();
 website.init();
 
-// partie Renaud
-
-// var home = document.getElementById('home')
-var friendsList = document.getElementById('friends-list');
-var channelsList = document.getElementById('channels-list');
-var notifList = document.getElementById('notif-list');
-var friendChat = document.getElementById('friends-chat');
-// var channelChat = document.getElementById('channel-chat')
-var friendHeader = document.getElementById('friends-header');
-var menu = document.getElementById('menu');
-
-function goToFriendList() {
-  // home.style.display = 'none'
-  friendsList.style.display = 'block';
-  channelsList.style.display = 'none';
-  notifList.style.display = 'none';
-}
-
-function goToChannelList() {
-  // home.style.display = 'none'
-  friendsList.style.display = 'none';
-  channelsList.style.display = 'block';
-  notifList.style.display = 'none';
-}
-
-function goToNotifList() {
-  // home.style.display = 'none'
-  friendsList.style.display = 'none';
-  channelsList.style.display = 'none';
-  notifList.style.display = 'block';
-}
-
-function goToFriendChat() {
-  friendsList.style.display = 'none';
-  friendChat.style.display = 'block';
-  menu.style.display = 'none';
-  friendHeader.style.display = 'block';
-}
-
-// function goToChannelChat () {
-//
-// }
-
-function backToFriendList() {
-  friendsList.style.display = 'block';
-  friendChat.style.display = 'none';
-  menu.style.display = 'block';
-  friendHeader.style.display = 'none';
+function showPwd() {
+  var x = document.getElementById('password');
+  if (x.type === 'password') {
+    x.type = 'text';
+  } else {
+    x.type = 'password';
+  }
 }
 'use strict';
-
-var templateNotif = '<svg viewBox="0 0 100 100"><path fill="#fdc67a" d="M50,2A48,48,0,1,0,98,50,48.05,48.05,0,0,0,50,2Z"/><path fill="#780e3b" d="M72.62,30.31,44.25,62.23,27.15,48.56a1.85,1.85,0,0,0-2.31,2.88L43.31,66.21A1.85,1.85,0,0,0,45.84,66L75.38,32.76a1.85,1.85,0,0,0-2.76-2.45Z"/></svg>';
 
 Vue.component('message-item', {
   props: ['message'],

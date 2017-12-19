@@ -5,7 +5,7 @@
 if($action === 'login_form'){
 
   $welcome_message = 'Bienvenue connectez - vous';
-  $login_form = create_form('bonjour');
+  // $login_form = create_form('bonjour');
 
 }
 
@@ -41,7 +41,7 @@ if($action === 'login'){
     }
     else
     {
-      $message_error_login = 'Pas d\'utilisateur trouvé.';
+      $message_error_login = 'Mot de passe ou identifiant incorrect';
     }
 
   }
@@ -53,7 +53,7 @@ if($action === 'login'){
 
 if($action === 'register_form'){
 
-  $welcome_message = 'Remplissez les champs pour créer un compte';
+  $welcome_message = 'Remplissez tous les champs pour créer un compte';
 
 }
 
@@ -95,7 +95,7 @@ if($action === 'register'){
       if ($resultRequest)
       {
         $statut_register = true;
-        $message_account_created = 'Votre compte a bien été créée. Veuillez valider votre addresse mail pour l\'utiliser';
+        $message_account_created = 'Votre compte a bien été créé, vous pouvez à présent connecter';
       }
       else
         $message_error_register = 'Problème de connexion bdd';

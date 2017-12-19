@@ -14,6 +14,8 @@ class Channel {
     t.userId = window.localStorage.getItem('id_user')
     t.userPseudo = window.localStorage.getItem('pseudo_user')
 
+    t.arrowBack = document.querySelectorAll('section .container-title .back')
+
     t.ajaxUrl = 'http://localhost:8888/ECVDigital/Workshop/dest/controller/AjaxRequests.php'
     // lance init
     t.init()
@@ -56,11 +58,21 @@ class Channel {
       }
     })
 
-    // boutons du formulaire
+    // boutons du formulaire envoi message
     Object.keys(t.buttons).map(function (key) {
       t.buttons[key].addEventListener('click', function () {
         var buttonName = this.getAttribute('data-button')
         document.querySelector('#' + t.name + ' .' + buttonName).click()
+      })
+    })
+
+    // arrow back channel
+    Object.keys(t.arrowBack).map(function (key) {
+      t.arrowBack[key].addEventListener('click', function () {
+        // remove class selected reviens au menu
+        let sectionSelected = document.querySelectorAll('section.selected')[0]
+        console.log(sectionSelected)
+        sectionSelected.classList.remove('selected')
       })
     })
 
@@ -151,7 +163,7 @@ class Channel {
   addMessage (data) {
     const t = this
 
-    let content = '<p class="pseudo">' + data.pseudo + ' : </p>' + data.messageContent
+    let content = '<p class="pseudo"> ' + data.pseudo + ' </p><div class="bubble">' + data.messageContent + '</div>'
     let idChannel = t.getChannelName()
     t.messageList.messages.push({ content: content, class: data.class, idMessage: data.idMessage, idChannel: idChannel })
   }

@@ -64,7 +64,8 @@ io.on('connection', function (socket) {
     let date = new Date()
     let todayHour = date.getHours()
     let todayMinutes = date.getMinutes()
-    let sql = 'INSERT INTO messages (msg_id_channel, msg_id_user, msg_content, msg_date) VALUES ("' + idChannel + '", "' + data.id + '", "' + msg + '", "' + (todayHour + ' : ' + todayMinutes) + '")'
+    let message = '<div class=\'bubble\'>' + msg + '</div>'
+    let sql = 'INSERT INTO messages (msg_id_channel, msg_id_user, msg_content, msg_date) VALUES ("' + idChannel + '", "' + data.id + '", "' + message + '", "' + (todayHour + ' : ' + todayMinutes) + '")'
     con.query(sql, function (err, result) {
       // TODO : envoyer message erreur côté client
       if (err) console.log(err)

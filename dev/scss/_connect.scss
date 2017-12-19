@@ -3,7 +3,7 @@
   color: white;
 }
 
-.connect h1 { 
+.connect h1 {
   font-size: 2em;
   text-align: center;
   position: absolute;
@@ -27,7 +27,7 @@
   display: inline-block;
 }
 
-.connect form fieldset input[type="text"], input[type="password"], input[type="email"] {
+.connect input[type="text"], input[type="password"], input[type="email"] {
   background: transparent;
   border: 1px solid white;
   border-radius: 30px;
@@ -49,7 +49,7 @@
   opacity: 1;
 }
 
-.connect form fieldset button[type="submit"] {
+.connect button[type="submit"] {
   background-color: $yellow;
   border: none;
   border-radius: 30px;
@@ -71,7 +71,7 @@
 
 .connect fieldset .error {
   text-align: center;
-  color: #AC3044;
+  color: $yellow;
   margin-bottom: 20px;
 }
 
@@ -96,15 +96,15 @@
 }
 
 .backdrop {
-  background: url(../img/bg.jpg) no-repeat center fixed; 
-  height: 300px;
+  background: url(../img/bg.jpg) no-repeat center fixed;
+  height: 240px;
   background-size: cover;
   background-position: bottom center;
 }
 
 .backdrop2 {
-  background: url(../img/bg.jpg) no-repeat center fixed; 
-  height: 200px;
+  background: url(../img/bg.jpg) no-repeat center fixed;
+  height: 100px;
   background-size: cover;
   background-position: bottom center;
 }

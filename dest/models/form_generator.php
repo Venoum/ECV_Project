@@ -2,10 +2,10 @@
 
 // LE PASSER EN CLASS PHP
 
-function create_form($id, $numberInput, $numberImg, $submitValue)
+function create_form()
 {
-  $formulaire = '<form id="'.$id.'"></form>';
-  return $formulaire;
+  // $formulaire = '<form id="'.$id.'"></form>';
+  // return $formulaire;
 }
 
 
