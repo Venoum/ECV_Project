@@ -1,0 +1,87 @@
+.connect {
+  background: white;
+  color: #5a5656;
+}
+
+.connect h1 { 
+  font-size: 1em; 
+  text-align: center;
+}
+
+.connect fieldset {
+  border: none;
+  margin: 25px 0px;
+}
+
+.connect a {
+  display: block;
+  text-align: center;
+  margin-top: 30px;
+  color: #5a5656;
+}
+
+.connect a:hover {
+  text-decoration: underline;
+}
+
+.connect form fieldset input[type="text"], input[type="password"], input[type="email"] {
+  display: block;
+  margin: 0 auto;
+  background: white;
+  border: none;
+  border-radius: 3px;
+  color: #5a5656;
+  font-family: inherit;
+  font-size: 14px;
+  height: 50px;
+  outline: none;
+  padding: 0px 10px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  width: 280px;
+  -webkit-appearance:none;
+}
+
+.connect form fieldset button[type="submit"] {
+  display: block;
+  margin: 0 auto;
+  margin-top: 15px;
+  background-color: #780E3B;
+  border: none;
+  border-radius: 30px;
+  color: #f4f4f4;
+  cursor: pointer;
+  font-family: inherit;
+  font-weight: bold;
+  height: 50px;
+  text-transform: uppercase;
+  width: 300px;
+  -webkit-appearance:none;
+}
+
+.connect form fieldset button[type="submit"]:hover
+{
+  box-shadow: 0px 10px 20px #780E3B;
+}
+
+.connect fieldset img {
+  width: 30px;
+  display: block;
+  margin: 0 auto;
+}
+
+.connect fieldset .error {
+  text-align: center;
+  color: #AC3044;
+  margin-bottom: 20px;
+}
+
+.backdrop {
+  background: url(../img/backdrop.jpg) no-repeat center fixed; 
+  height: 300px;
+}
+
+.backdrop-2 {
+  background: url(../img/backdrop.jpg) no-repeat center fixed; 
+  height: 200px;
+}

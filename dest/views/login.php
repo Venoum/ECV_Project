@@ -9,4 +9,4 @@
     }
 
     else
-      header("Location: index.php?message=$message_error_login&action=login_form");
+      header("Location: index.php?message=".$message_error_login."&action=login_form");

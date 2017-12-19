@@ -53,7 +53,7 @@ if($action === 'login'){
 
 if($action === 'register_form'){
 
-  $welcome_message = 'Bienvenue connectez - vous';
+  $welcome_message = 'Remplissez les champs pour créer un compte';
 
 }
 

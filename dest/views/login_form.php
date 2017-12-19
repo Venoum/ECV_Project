@@ -10,24 +10,22 @@
 
 </head>
 <body>
-    <div>
-
-      <h1><?= $welcome_message ?></h1>
-
-      <?php if (isset($_GET['message'])): ?>
-        <p class="error"><?php echo $_GET['message']; ?></p>
-      <?php endif; ?>
-
-      <?php echo $login_form ?>
-
-      <form method="post" action="index.php?action=login">
-        <input type="text" name="pseudo">
-        <input type="password" name="password">
-        <button type="submit" name="button">se connecter</button>
-      </form>
-
-      <a href="index.php?action=register_form">se créer un compte</a>
-
+    <div class="mobile-wrapper connect">
+        <div class="backdrop"></div>
+        <h1><?= $welcome_message ?></h1>
+        <form method="post" action="index.php?action=login">
+          <fieldset>
+            <?php if (isset($_GET['message'])): ?>
+              <p class="error"><?php echo $_GET['message']; ?></p>
+            <?php endif; ?>
+            <img src="assets/img/user.png" alt="">
+            <input type="text" required name="pseudo" placeholder="Pseudo">
+            <img src="assets/img/lock.png" alt="">
+            <input type="password" required name="password" placeholder="Password">
+            <button type="submit" name="button">Se connecter</button>
+          </fieldset>
+        </form>
+        <a href="index.php?action=register_form">Créer un compte</a>
     </div>
 </body>
 </html>
