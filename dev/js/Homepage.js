@@ -12,6 +12,7 @@ class Homepage {
     t.notifContainer = document.querySelectorAll('.notifications-c')[0]
     t.notificationsArray = notificationsArray
     t.number = document.querySelectorAll('.bt-notification .number p')[0]
+    t.btSubmitForm = document.querySelectorAll('.nav-second form .bt-submit')
 
     t.notifsList = new Vue({
       el: '#notifications',
@@ -83,6 +84,18 @@ class Homepage {
       if (t.notifContainer.classList.contains('active')) t.notifContainer.classList.remove('active')
       else t.notifContainer.classList.add('active')
       if (t.channelList.classList.contains('active')) t.channelList.classList.remove('active')
+    })
+
+    // watcher form
+    Object.keys(t.btSubmitForm).map(function (key) {
+      t.btSubmitForm[key].addEventListener('click', function () {
+        let formId = this.getAttribute('data-form')
+        let form = document.getElementById(formId)
+        let button = form.querySelectorAll('button')[0]
+        let inputValue = this.parentNode.querySelectorAll('input')[0].value
+        if (inputValue !== '') button.click()
+        return false
+      })
     })
   }
 

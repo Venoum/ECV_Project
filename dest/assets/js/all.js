@@ -268,6 +268,7 @@ var Homepage = function () {
     t.notifContainer = document.querySelectorAll('.notifications-c')[0];
     t.notificationsArray = notificationsArray;
     t.number = document.querySelectorAll('.bt-notification .number p')[0];
+    t.btSubmitForm = document.querySelectorAll('.nav-second form .bt-submit');
 
     t.notifsList = new Vue({
       el: '#notifications',
@@ -342,6 +343,18 @@ var Homepage = function () {
       t.btNotifs.addEventListener('click', function () {
         if (t.notifContainer.classList.contains('active')) t.notifContainer.classList.remove('active');else t.notifContainer.classList.add('active');
         if (t.channelList.classList.contains('active')) t.channelList.classList.remove('active');
+      });
+
+      // watcher form
+      Object.keys(t.btSubmitForm).map(function (key) {
+        t.btSubmitForm[key].addEventListener('click', function () {
+          var formId = this.getAttribute('data-form');
+          var form = document.getElementById(formId);
+          var button = form.querySelectorAll('button')[0];
+          var inputValue = this.parentNode.querySelectorAll('input')[0].value;
+          if (inputValue !== '') button.click();
+          return false;
+        });
       });
     }
   }, {
@@ -467,12 +480,64 @@ var Website = function () {
 
   return Website;
 }();
-"use strict";
+'use strict';
 
 // créer la classe
 var website = new Website();
 website.init();
+
+// partie Renaud
+
+// var home = document.getElementById('home')
+var friendsList = document.getElementById('friends-list');
+var channelsList = document.getElementById('channels-list');
+var notifList = document.getElementById('notif-list');
+var friendChat = document.getElementById('friends-chat');
+// var channelChat = document.getElementById('channel-chat')
+var friendHeader = document.getElementById('friends-header');
+var menu = document.getElementById('menu');
+
+function goToFriendList() {
+  // home.style.display = 'none'
+  friendsList.style.display = 'block';
+  channelsList.style.display = 'none';
+  notifList.style.display = 'none';
+}
+
+function goToChannelList() {
+  // home.style.display = 'none'
+  friendsList.style.display = 'none';
+  channelsList.style.display = 'block';
+  notifList.style.display = 'none';
+}
+
+function goToNotifList() {
+  // home.style.display = 'none'
+  friendsList.style.display = 'none';
+  channelsList.style.display = 'none';
+  notifList.style.display = 'block';
+}
+
+function goToFriendChat() {
+  friendsList.style.display = 'none';
+  friendChat.style.display = 'block';
+  menu.style.display = 'none';
+  friendHeader.style.display = 'block';
+}
+
+// function goToChannelChat () {
+//
+// }
+
+function backToFriendList() {
+  friendsList.style.display = 'block';
+  friendChat.style.display = 'none';
+  menu.style.display = 'block';
+  friendHeader.style.display = 'none';
+}
 'use strict';
+
+var templateNotif = '<svg viewBox="0 0 100 100"><path fill="#fdc67a" d="M50,2A48,48,0,1,0,98,50,48.05,48.05,0,0,0,50,2Z"/><path fill="#780e3b" d="M72.62,30.31,44.25,62.23,27.15,48.56a1.85,1.85,0,0,0-2.31,2.88L43.31,66.21A1.85,1.85,0,0,0,45.84,66L75.38,32.76a1.85,1.85,0,0,0-2.76-2.45Z"/></svg>';
 
 Vue.component('message-item', {
   props: ['message'],
@@ -481,7 +546,7 @@ Vue.component('message-item', {
 
 Vue.component('notif-item', {
   props: ['notif'],
-  template: '<li v-bind:id="notif.id"><p>{{notif.pseudo}} veut parler avec vous</p><span v-on:click="action" class="bt bt-action bt-round" data-action="accepted" v-bind:data-id-user="notif.userId">Y</span><span v-on:click="action" class="bt bt-action bt-round" data-action="refused" v-bind:data-id-user="notif.userId">N</span></li>',
+  template: '<li v-bind:id="notif.id"><p>{{notif.pseudo}} veut parler avec vous</p><div class="bt-c"><svg v-on:click="action" class="bt bt-action  " data-action="accepted" v-bind:data-id-user="notif.userId" viewBox="0 0 100 100"><path fill="#fdc67a" d="M50,2A48,48,0,1,0,98,50,48.05,48.05,0,0,0,50,2Z"/><path fill="#780e3b" d="M72.62,30.31,44.25,62.23,27.15,48.56a1.85,1.85,0,0,0-2.31,2.88L43.31,66.21A1.85,1.85,0,0,0,45.84,66L75.38,32.76a1.85,1.85,0,0,0-2.76-2.45Z"/></svg><svg v-on:click="action" class="bt bt-action  " data-action="refused" v-bind:data-id-user="notif.userId" viewBox="0 0 100 100"><path fill="#fdc67a" d="M50,1.19A48.81,48.81,0,1,0,98.81,50,48.87,48.87,0,0,0,50,1.19Z"/><path fill="#780e3b" d="M68.22,31.78a1.88,1.88,0,0,0-2.65,0L50,47.35,34.43,31.78a1.88,1.88,0,0,0-2.65,2.65L47.35,50,31.78,65.57a1.88,1.88,0,1,0,2.65,2.65L50,52.65,65.57,68.22a1.88,1.88,0,0,0,2.65-2.65L52.65,50,68.22,34.43A1.88,1.88,0,0,0,68.22,31.78Z"/></svg></div></li>',
   methods: {
     action: function action(event) {
       var userPseudoRequest = event.currentTarget.getAttribute('data-id-user');

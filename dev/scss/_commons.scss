@@ -1,6 +1,10 @@
 body {
   // TODO : trouve un truc de fond
-  background-color: green
+
+}
+
+* {
+  font-family: $dosis
 }
 
 
@@ -9,11 +13,14 @@ body {
   width: 100vw;
   height: 100vh;
   max-height: 800px;
-  background-color: $lightgrey;
   position: fixed;
   top: 50%;
   left: 50%;
   transform: translateX(-50%) translateY(-50%);
+
+  background-image: url('../img/bg.jpg');
+  background-position: center;
+  background-size: cover;
 }
 
 .bt {
@@ -46,7 +53,7 @@ body {
   width: 10px;
   height: 10px;
 }
-// 
+//
 // .bt-round {
 //   color: black;
 //   width: 100%;
@@ -57,3 +64,8 @@ body {
 //   line-height: 25px;
 //   border-radius: 100%;
 // }
+
+
+.hidden {
+  visibility: hidden
+}

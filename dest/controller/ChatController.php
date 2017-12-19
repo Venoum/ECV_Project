@@ -1,5 +1,9 @@
 <?php
 
+// reset tous les messages
+$message_error_friend = false;
+$message_error_channel = false;
+
 
 if ($action === 'chat')
 {
@@ -54,8 +58,8 @@ if ($action === 'chat')
 
   /// Partie Vincent
 
-  $message_error_register = false;
-  $message_error_register2 = false;
+  $message_error_friend = false;
+  $message_error_channel = false;
 
   //addFriend Action
   if (isset($_POST['pseudo']) and isset($_GET['param']) and $_GET['param'] === 'addFriend')
@@ -77,7 +81,7 @@ if ($action === 'chat')
     }
     else
     {
-      $message_error_register = 'L\'utilisateur n\'existe pas';
+      $message_error_friend = 'L\'utilisateur n\'existe pas';
     }
 
     //already a friend
@@ -85,13 +89,13 @@ if ($action === 'chat')
       $requestCheckFriend = "SELECT fr_id_user_send FROM friends WHERE fr_id_user_send = $id_user AND fr_id_user_receiver = ".$receiverID['us_id']."";
       $result2 = myFetchAssoc($requestCheckFriend);
       if ($result2){
-        $message_error_register = 'Vous êtes déjà amis avec '.$pseudo;
+        $message_error_friend = 'Vous êtes déjà amis avec '.$pseudo;
 
         //if already request and status : refused
         $requestAddFriendStatus = "SELECT fr_status FROM friends WHERE fr_id_user_send = $id_user AND fr_id_user_receiver = ".$receiverID['us_id']."";
         $result3 = myFetchAssoc($requestAddFriendStatus);
         if ($result3['fr_status'] === 'refused') {
-          $message_error_register = 'Erreur : '.$pseudo.' ne souhaite pas devenir votre amis';
+          $message_error_friend = 'Erreur : '.$pseudo.' ne souhaite pas devenir votre amis';
         }
       }
       else {
@@ -103,7 +107,7 @@ if ($action === 'chat')
         $requestAddFriend = "INSERT INTO friends (`fr_id_user_send`, `fr_id_user_receiver`, `fr_status`) VALUES ($id_user, ".$receiverID['us_id'].", 'pending')";
         $result4 = myQuery($requestAddFriend);
         if (!$result4){
-          $message_error_register = 'Problème de connexion base de donnée';
+          $message_error_friend = 'Problème de connexion base de donnée';
         }
         else {
 
@@ -122,15 +126,18 @@ if ($action === 'chat')
           $requestAddChannel = "INSERT INTO channels (`ch_name`, `ch_type`, `ch_created`) VALUES ('".$allPseudo."', 'private', '".$datePrivate."')";
           $result5 = myQuery($requestAddChannel);
           if (!$result5){
-            $message_error_register = 'Problème de connexion base de donnée';
+            $message_error_friend = 'Problème de connexion base de donnée';
           }
           $message_validate_friend = "Votre demande d'ajouter ".$pseudo." en amis est envoyée";
         }
       }
     }
   }
-  else {
-    $message_error_register = 'manque un champs : Ajout Amis';
+
+  // Modif ici
+  else if (empty($_POST['pseudo']) and isset($_GET['param']) and $_GET['param'] === 'addFriend')
+  {
+    $message_error_friend = 'manque un champs : Ajout Amis';
   }
 
   //addChannel Action
@@ -148,7 +155,7 @@ if ($action === 'chat')
     }
     else
     {
-      $message_error_register = 'Le salon $channelName existe déjà';
+      $message_error_channel = 'Le salon '.$channelName.' existe déjà';
     }
 
     if (isset($statut_register_channel)){
@@ -156,12 +163,13 @@ if ($action === 'chat')
       $requestAddChannelPublic = "INSERT INTO channels (`ch_name`, `ch_type`, `ch_created`) VALUES ('".$channelName."', 'public', '".$datePublic."')";
       $result7 = myQuery($requestAddChannelPublic);
       if (!$result7){
-        $message_error_register = 'Problème de connexion base de donnée';
+        $message_error_channel = 'Problème de connexion base de donnée';
       }
       $message_validate_channel = "Le salon ".$channelName." a été créé";
     }
   }
-  else {
-    $message_error_register2 = 'manque un champs : Ajout Salon';
+  else if (empty($_POST['channelName']) and isset($_GET['param']) and $_GET['param'] === 'addChannel')
+  {
+    $message_error_channel = 'manque un champs : Ajout Salon';
   }
 }

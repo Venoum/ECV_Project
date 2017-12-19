@@ -20,3 +20,9 @@ a {
 ul {
   list-style: none;
 }
+
+input, button {
+  outline: none;
+  border: solid 0px transparent;
+  background-color: transparent;
+}
