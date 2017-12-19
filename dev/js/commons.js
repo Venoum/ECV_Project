@@ -53,3 +53,12 @@ function backToFriendList () {
   menu.style.display = 'block'
   friendHeader.style.display = 'none'
 }
+
+function showPwd($object) {
+  let x = document.getElementById("password");
+  if (x.type === "password") {
+    x.type = "text";
+  } else {
+    x.type = "password";
+  }
+}
